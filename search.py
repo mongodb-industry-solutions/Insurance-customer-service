@@ -12,11 +12,12 @@ mdb_uri = os.getenv("MONGO_URI")
 client = MongoClient(mdb_uri)
 DB_NAME = "insurance_customer_service"
 COLLECTION_NAME = "FAQs"
-#ATLAS_VECTOR_SEARCH_INDEX_NAME = "cohere"
-ATLAS_VECTOR_SEARCH_INDEX_NAME = "huggingFace"
-#embeddings = BedrockEmbeddings(model_id="cohere.embed-english-v3")
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 MONGODB_COLLECTION = client[DB_NAME][COLLECTION_NAME]
+ATLAS_VECTOR_SEARCH_INDEX_NAME = "cohere"
+#ATLAS_VECTOR_SEARCH_INDEX_NAME = "huggingFace"
+
+embeddings = BedrockEmbeddings(model_id="cohere.embed-english-v3")
+#embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 
 vector_store = MongoDBAtlasVectorSearch(
     collection=MONGODB_COLLECTION,
@@ -27,7 +28,7 @@ vector_store = MongoDBAtlasVectorSearch(
     relevance_score_fn="cosine",
 )
 
-results = vector_store.similarity_search("How do I add a coverage to my policy?", k=1)
+results = vector_store.similarity_search("How do I add driver?", k=1)
 #print(results[0].page_content)
 
 for res in results:
