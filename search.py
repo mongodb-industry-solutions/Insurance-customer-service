@@ -22,13 +22,14 @@ vector_store = MongoDBAtlasVectorSearch(
     collection=MONGODB_COLLECTION,
     embedding=embeddings,
     text_key="answer",
-    embedding_key="embedding_hf",
+    embedding_key="embedding_cohere",
     index_name=ATLAS_VECTOR_SEARCH_INDEX_NAME,
     relevance_score_fn="cosine",
 )
 
-results = vector_store.similarity_search("coverages", k=1)
-print(results[0].page_content)
+results = vector_store.similarity_search("How do I add a coverage to my policy?", k=1)
+#print(results[0].page_content)
 
-""" for res in results:
-    #print(f"* {res.page_content} [{res.metadata}]")"""
+for res in results:
+    #print(f"* {res.page_content} [{res.metadata}]")
+    print(f"* {res.page_content} ")
