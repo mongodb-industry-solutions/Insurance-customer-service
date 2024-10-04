@@ -38,7 +38,7 @@ async def test_websocket():
         receive_task = asyncio.create_task(receive_transcriptions(ws))
 
         # Simulate user clicking a "submit" button after a period of recording
-        await asyncio.sleep(300)  # Record for 5 minutes
+        await asyncio.sleep(100)  # Record for 5 minutes
         await ws.send("submit_response")
         send_task.cancel()  # Stop sending audio data
 
