@@ -7,9 +7,26 @@ from amazon_transcribe.client import TranscribeStreamingClient
 from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
 import httpx
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from search import semantic_search
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.websocket("/TranscribeStreaming")
 async def websocket_endpoint(websocket: WebSocket):
@@ -34,13 +51,6 @@ async def websocket_endpoint(websocket: WebSocket):
                         print(alt.transcript)  # Log intermediate transcript <----------
                         self.final_transcript += alt.transcript + " "
                         await self.websocket.send_text(alt.transcript)
-                        # Send alt.transcript to the textSearch API <----------
-                        await self.send_to_text_search(alt.transcript)
-
-        async def send_to_text_search(self, transcript):
-            async with httpx.AsyncClient() as client:
-                response = await client.post("http://localhost:8000/textSearch", json={"transcript": transcript})
-                logging.info(f"Sent to textSearch API: {transcript}, Response: {response.json()}")
 
         async def send_final_transcript(self):
             if websocket_open:  # Check WebSocket state
@@ -114,7 +124,7 @@ async def text_search(request: Request):
     question = data.get("transcript")
     answer = semantic_search(question)
     print(answer)
-    return {"message": "success"}
+    return {"message": answer}
 
 if __name__ == "__main__":
     import uvicorn

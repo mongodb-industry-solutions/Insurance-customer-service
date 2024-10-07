@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 const App = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState('');
+  const [apiResult, setApiResult] = useState(''); // New state for API response
 
   let ws = null; // WebSocket instance
   let audioContext = null; // AudioContext instance
@@ -128,6 +129,30 @@ const App = () => {
     return int16Array;
   };
 
+  // UseEffect to log transcription updates and make API call
+  useEffect(() => {
+    if (transcription) {
+      console.log("Current transcription:", transcription);
+
+      // Send the transcription to the textSearch API
+      fetch("http://localhost:8000/textSearch", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ transcript: transcription }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Response from testSearch API:", data);
+          setApiResult(data.message); // Set the API result to state
+        })
+        .catch((error) => {
+          console.error("Error sending transcription to testSearch:", error);
+        });
+    }
+  }, [transcription]);
+
   // Clean up WebSocket on unmount
   useEffect(() => {
     return () => {
@@ -139,13 +164,17 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>WebSocket Audio Streaming</h1>
+      <h1>Audio Streaming</h1>
       <button onClick={toggleRecording}>
         {isRecording ? 'Stop Recording' : 'Start Recording'}
       </button>
       <div>
         <h2>Transcription:</h2>
         <p>{transcription}</p>
+      </div>
+      <div>
+        <h2>API Response:</h2>
+        <p>{apiResult}</p> {/* Display the API result */}
       </div>
     </div>
   );
