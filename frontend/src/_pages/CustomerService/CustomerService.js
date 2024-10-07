@@ -1,127 +1,122 @@
 import React, { useState, useEffect } from 'react';
 
+const App = () => {
+  const [isRecording, setIsRecording] = useState(false);
+  const [transcription, setTranscription] = useState('');
+  let ws = null;
+  let audioContext = null;
+  let mediaStreamSource = null;
+  let scriptProcessor = null;
 
-const AudioRecorder = () => {
-  const [isRecording, setIsRecording] = useState(false); // To track recording state
-  const [socket, setSocket] = useState(null); // WebSocket connection state
-  const [audioContext, setAudioContext] = useState(null); // AudioContext state
-  const [mediaStream, setMediaStream] = useState(null); // Media stream for microphone input
-  const [audioNode, setAudioNode] = useState(null); // AudioWorkletNode state
-
-  // WebSocket connection handler
-  useEffect(() => {
-    if (!isRecording) return;
-
-    const ws = new WebSocket('ws://localhost:8000/TranscribeStreaming');
+  const connectWebSocket = (uri) => {
+    ws = new WebSocket(uri);
 
     ws.onopen = () => {
-      console.log("WebSocket connection opened");
-      setSocket(ws);
-    };
-
-    ws.onmessage = (event) => {
-      console.log('Received transcription: ', event.data);
+      console.log("WebSocket connection established.");
     };
 
     ws.onclose = () => {
-      console.log("WebSocket connection closed");
-      setSocket(null);
+      console.log("WebSocket connection closed.");
     };
 
     ws.onerror = (error) => {
-      console.error("WebSocket error: ", error);
+      console.error("WebSocket error:", error);
     };
 
-    return () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close();
-      }
+    ws.onmessage = (message) => {
+      console.log("Message from WebSocket server:", message.data);
+      setTranscription(message.data);
     };
-  }, [isRecording]);
-
-  // Handle audio recording
-  const startRecording = async () => {
-    setIsRecording(true);
-  
-    try {
-      // Request access to the microphone
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          sampleRate: 16000,
-          channelCount: 1,
-          sampleSize: 16,
-        },
-      });
-  
-      // Proceed if stream is successfully obtained
-      const context = new AudioContext();
-      await context.audioWorklet.addModule('audioProcessor.js'); // Load the custom audio processor
-      const source = context.createMediaStreamSource(stream);
-      const audioWorkletNode = new AudioWorkletNode(context, 'audio-processor');
-  
-      // Listen for messages (audio data) from the AudioWorkletProcessor
-      audioWorkletNode.port.onmessage = (event) => {
-        const audioBuffer = event.data; // Get the audio buffer from the processor
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(audioBuffer); // Send audio data to the server
-        }
-      };
-  
-      // Connect the audio source to the worklet processor
-      source.connect(audioWorkletNode);
-      audioWorkletNode.connect(context.destination);
-  
-      setAudioContext(context);
-      setMediaStream(stream);
-      setAudioNode(audioWorkletNode);
-  
-      // Automatically stop the recording after 5 minutes
-      setTimeout(() => stopRecording(), 1000 * 300); // 5 minutes in milliseconds
-  
-    } catch (err) {
-      if (err.name === 'NotAllowedError') {
-        console.error('Microphone access denied by the user.');
-      } else if (err.name === 'NotFoundError') {
-        console.error('No microphone found on this device.');
-      } else {
-        console.error('Error accessing the microphone:', err);
-      }
-      setIsRecording(false); // Ensure recording state is updated if an error occurs
-    }
   };
-  
+
+  const startRecording = () => {
+    if (isRecording) {
+      return; // Already recording
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then((stream) => {
+        // Create an AudioContext with a sample rate of 16kHz
+        audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+
+        // Create a MediaStreamAudioSourceNode from the input stream
+        mediaStreamSource = audioContext.createMediaStreamSource(stream);
+
+        // Create a ScriptProcessorNode for processing the audio data
+        scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+
+        // Connect the source to the processor and then to the destination (output)
+        mediaStreamSource.connect(scriptProcessor);
+        scriptProcessor.connect(audioContext.destination);
+
+        // Process audio in 4096 sample chunks and send to WebSocket
+        scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
+          const audioData = audioProcessingEvent.inputBuffer.getChannelData(0); // Get data for the first channel
+          
+          // Convert Float32Array to Int16Array for PCM format
+          const pcmData = convertFloat32ToInt16(audioData);
+          
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(pcmData.buffer); // Send raw PCM data as ArrayBuffer
+            console.log("Sent audio data to WebSocket.");
+          }
+        };
+
+        console.log("Recording started...");
+      })
+      .catch((error) => {
+        console.error("Error accessing microphone:", error);
+      });
+  };
 
   const stopRecording = () => {
-    setIsRecording(false);
-
-    // Stop sending audio to WebSocket
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send("submit_response"); // Notify the server that recording is done
-      socket.close(); // Close WebSocket connection
+    if (scriptProcessor) {
+      scriptProcessor.disconnect(); // Disconnect the processor
     }
-
-    // Stop the media stream and audio context
-    if (mediaStream) {
-      mediaStream.getTracks().forEach(track => track.stop());
+    if (mediaStreamSource) {
+      mediaStreamSource.disconnect(); // Disconnect the media stream source
     }
-
     if (audioContext) {
-      audioContext.close();
+      audioContext.close(); // Close the audio context
     }
 
-    if (audioNode) {
-      audioNode.port.close(); // Close the port between the main thread and the worklet
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send("submit_response"); // Send stop signal to WebSocket server
+      console.log("Stopped recording and submitted response.");
     }
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording();
+      setIsRecording(false);
+    } else {
+      connectWebSocket('ws://localhost:8000/TranscribeStreaming');
+      startRecording();
+      setIsRecording(true);
+    }
+  };
+
+  const convertFloat32ToInt16 = (float32Array) => {
+    let int16Array = new Int16Array(float32Array.length);
+    for (let i = 0; i < float32Array.length; i++) {
+      int16Array[i] = Math.max(-1, Math.min(1, float32Array[i])) * 32767; // Convert to 16-bit PCM
+    }
+    return int16Array;
   };
 
   return (
-    <div>
-      <h1>Streaming Audio Recorder</h1>
-      <button onClick={isRecording ? stopRecording : startRecording}>
-        {isRecording ? "Stop Recording" : "Start Recording"}
+    <div className="App">
+      <h1>WebSocket Audio Streaming</h1>
+      <button onClick={toggleRecording}>
+        {isRecording ? 'Stop Recording' : 'Start Recording'}
       </button>
+      <div>
+        <h2>Transcription:</h2>
+        <p>{transcription}</p>
+      </div>
     </div>
   );
 };
 
-export default AudioRecorder;
+export default App;

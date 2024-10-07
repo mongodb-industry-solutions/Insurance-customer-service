@@ -10,7 +10,7 @@ async def send_audio(ws):
     def audio_callback(indata, frames, time, status):
         loop.call_soon_threadsafe(input_queue.put_nowait, indata.tobytes())
 
-    # Record audio stream
+    # Record audio streamc
     stream = sd.InputStream(
         channels=1,
         samplerate=16000,
@@ -38,7 +38,7 @@ async def test_websocket():
         receive_task = asyncio.create_task(receive_transcriptions(ws))
 
         # Simulate user clicking a "submit" button after a period of recording
-        await asyncio.sleep(100)  # Record for 5 minutes
+        await asyncio.sleep(10)  # Record for 5 minutes
         await ws.send("submit_response")
         send_task.cancel()  # Stop sending audio data
 

@@ -30,7 +30,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     if result.is_partial:
                         continue
                     for alt in result.alternatives:
-                        print(alt.transcript)
+                        print(alt.transcript)  # Log intermediate transcript
                         self.final_transcript += alt.transcript + " "
                         await self.websocket.send_text(alt.transcript)
 
