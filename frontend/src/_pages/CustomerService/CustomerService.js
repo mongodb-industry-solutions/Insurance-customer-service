@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 const App = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState('');
-  let ws = null;
-  let audioContext = null;
-  let mediaStreamSource = null;
-  let scriptProcessor = null;
+
+  let ws = null; // WebSocket instance
+  let audioContext = null; // AudioContext instance
+  let mediaStreamSource = null; // MediaStreamSource instance
+  let scriptProcessor = null; // ScriptProcessorNode instance
+  let mediaRecorder = null; // MediaRecorder instance
 
   const connectWebSocket = (uri) => {
     ws = new WebSocket(uri);
@@ -36,28 +38,22 @@ const App = () => {
 
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then((stream) => {
-        // Create an AudioContext with a sample rate of 16kHz
         audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
 
-        // Create a MediaStreamAudioSourceNode from the input stream
         mediaStreamSource = audioContext.createMediaStreamSource(stream);
-
-        // Create a ScriptProcessorNode for processing the audio data
         scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
 
-        // Connect the source to the processor and then to the destination (output)
         mediaStreamSource.connect(scriptProcessor);
         scriptProcessor.connect(audioContext.destination);
 
-        // Process audio in 4096 sample chunks and send to WebSocket
+        // Handle audio data from the microphone
         scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
-          const audioData = audioProcessingEvent.inputBuffer.getChannelData(0); // Get data for the first channel
-          
-          // Convert Float32Array to Int16Array for PCM format
+          const audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
           const pcmData = convertFloat32ToInt16(audioData);
-          
+
+          // Send audio data to WebSocket
           if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(pcmData.buffer); // Send raw PCM data as ArrayBuffer
+            ws.send(pcmData.buffer);
             console.log("Sent audio data to WebSocket.");
           }
         };
@@ -70,33 +66,60 @@ const App = () => {
   };
 
   const stopRecording = () => {
-    if (scriptProcessor) {
-      scriptProcessor.disconnect(); // Disconnect the processor
-    }
-    if (mediaStreamSource) {
-      mediaStreamSource.disconnect(); // Disconnect the media stream source
-    }
-    if (audioContext) {
-      audioContext.close(); // Close the audio context
+    // Stop MediaRecorder
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop(); // Stop the MediaRecorder
+      console.log("MediaRecorder stopped.");
     }
 
+    // Disconnect and close audio context
+    if (scriptProcessor) {
+      scriptProcessor.disconnect(); // Disconnect script processor
+      console.log("Script processor disconnected.");
+    }
+    if (mediaStreamSource) {
+      mediaStreamSource.disconnect(); // Disconnect media stream source
+      console.log("Media stream source disconnected.");
+    }
+    if (audioContext) {
+      audioContext.close().then(() => {
+        console.log("Audio context closed.");
+      }).catch((err) => {
+        console.error("Error closing AudioContext:", err);
+      });
+    }
+
+    // Close WebSocket connection
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send("submit_response"); // Send stop signal to WebSocket server
-      console.log("Stopped recording and submitted response.");
+      ws.close(); // Close WebSocket connection
+      console.log("WebSocket connection closed.");
     }
+
+    // Update the recording state
+    setIsRecording(false);
+    console.log("Recording stopped and state updated.");
   };
 
   const toggleRecording = () => {
+    // Print when the button is clicked
+    console.log("Recording button clicked. Current recording state:", isRecording);
+
     if (isRecording) {
-      stopRecording();
-      setIsRecording(false);
+      console.log("Stopping the recording...");
+      stopRecording(); // Stop recording when already recording
     } else {
-      connectWebSocket('ws://localhost:8000/TranscribeStreaming');
-      startRecording();
-      setIsRecording(true);
+      console.log("Starting the recording...");
+      connectWebSocket('ws://localhost:8000/TranscribeStreaming'); // Start WebSocket connection
+      startRecording(); // Start audio recording
     }
+
+    // Toggle the recording state
+    setIsRecording(!isRecording);
+    console.log("Recording state toggled. New state:", !isRecording);
   };
 
+  // Utility function to convert Float32Array to Int16Array (required for WebSocket)
   const convertFloat32ToInt16 = (float32Array) => {
     let int16Array = new Int16Array(float32Array.length);
     for (let i = 0; i < float32Array.length; i++) {
@@ -104,6 +127,15 @@ const App = () => {
     }
     return int16Array;
   };
+
+  // Clean up WebSocket on unmount
+  useEffect(() => {
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, []);
 
   return (
     <div className="App">

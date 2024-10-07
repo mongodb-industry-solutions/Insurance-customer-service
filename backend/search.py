@@ -18,7 +18,6 @@ ATLAS_VECTOR_SEARCH_INDEX_NAME = "cohere"
 
 embeddings = BedrockEmbeddings(model_id="cohere.embed-english-v3")
 #embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
-
 vector_store = MongoDBAtlasVectorSearch(
     collection=MONGODB_COLLECTION,
     embedding=embeddings,
@@ -28,9 +27,15 @@ vector_store = MongoDBAtlasVectorSearch(
     relevance_score_fn="cosine",
 )
 
-results = vector_store.similarity_search("How do I add driver?", k=1)
+def semantic_search(text):
+    results = vector_store.similarity_search(text, k=1)
+    return results[0].page_content
+
+
+
+#results = vector_store.similarity_search("How do I add driver?", k=1)
 #print(results[0].page_content)
 
-for res in results:
+""" for res in results:
     #print(f"* {res.page_content} [{res.metadata}]")
-    print(f"* {res.page_content} ")
+    print(f"* {res.page_content} ") """

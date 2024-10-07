@@ -2,11 +2,12 @@
 import asyncio
 import os
 import logging
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from amazon_transcribe.client import TranscribeStreamingClient
 from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
-
+import httpx
+from search import semantic_search
 
 app = FastAPI()
 
@@ -30,9 +31,16 @@ async def websocket_endpoint(websocket: WebSocket):
                     if result.is_partial:
                         continue
                     for alt in result.alternatives:
-                        print(alt.transcript)  # Log intermediate transcript
+                        print(alt.transcript)  # Log intermediate transcript <----------
                         self.final_transcript += alt.transcript + " "
                         await self.websocket.send_text(alt.transcript)
+                        # Send alt.transcript to the textSearch API <----------
+                        await self.send_to_text_search(alt.transcript)
+
+        async def send_to_text_search(self, transcript):
+            async with httpx.AsyncClient() as client:
+                response = await client.post("http://localhost:8000/textSearch", json={"transcript": transcript})
+                logging.info(f"Sent to textSearch API: {transcript}, Response: {response.json()}")
 
         async def send_final_transcript(self):
             if websocket_open:  # Check WebSocket state
@@ -98,6 +106,15 @@ async def websocket_endpoint(websocket: WebSocket):
         if handler:
             await handler.send_final_transcript()  # Ensure final transcript is sent in all cases
         await websocket.close()
+
+
+@app.post("/textSearch")
+async def text_search(request: Request):
+    data = await request.json()
+    question = data.get("transcript")
+    answer = semantic_search(question)
+    print(answer)
+    return {"message": "success"}
 
 if __name__ == "__main__":
     import uvicorn
