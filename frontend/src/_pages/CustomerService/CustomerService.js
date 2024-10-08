@@ -19,7 +19,7 @@ const App = () => {
   
     ws = new WebSocket(uri);
   
-    ws.onopen = () => {
+    /* ws.onopen = () => {
       console.log("WebSocket connection established.");
     };
   
@@ -34,7 +34,7 @@ const App = () => {
     ws.onmessage = (message) => {
       console.log("Message from WebSocket server:", message.data);
       setTranscription(message.data);
-    };
+    }; */
   };
 
   const startRecording = () => {
@@ -81,19 +81,21 @@ const App = () => {
         });
     };
   
-    ws.onclose = () => {
+    /* ws.onclose = () => {
       console.log("WebSocket connection closed.");
     };
   
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
-    };
+    }; */
   };
 
   const stopRecording = async () => {
+    ws.onclose = () => {console.log("WebSocket connection closed.");};
+    /* console.log(ws);
     try {
       console.log("Attempting to stop recording...");
-  
+      
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send("submit_response");  // Send stop signal only if WebSocket is open
         console.log("Sent 'submit_response' to WebSocket.");
@@ -121,7 +123,7 @@ const App = () => {
   
     } catch (error) {
       console.error("Error stopping recording:", error);
-    }
+    } */
   };
 
   const toggleRecording = () => {
