@@ -12,20 +12,25 @@ const App = () => {
   let mediaRecorder = null; // MediaRecorder instance
 
   const connectWebSocket = (uri) => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      console.log("WebSocket is already open.");
+      return;  // Do not reinitialize the WebSocket if already open
+    }
+  
     ws = new WebSocket(uri);
-
+  
     ws.onopen = () => {
       console.log("WebSocket connection established.");
     };
-
+  
     ws.onclose = () => {
       console.log("WebSocket connection closed.");
     };
-
+  
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-
+  
     ws.onmessage = (message) => {
       console.log("Message from WebSocket server:", message.data);
       setTranscription(message.data);
@@ -36,88 +41,98 @@ const App = () => {
     if (isRecording) {
       return; // Already recording
     }
-
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then((stream) => {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
-
-        mediaStreamSource = audioContext.createMediaStreamSource(stream);
-        scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
-
-        mediaStreamSource.connect(scriptProcessor);
-        scriptProcessor.connect(audioContext.destination);
-
-        // Handle audio data from the microphone
-        scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
-          const audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
-          const pcmData = convertFloat32ToInt16(audioData);
-
-          // Send audio data to WebSocket
-          if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(pcmData.buffer);
-            console.log("Sent audio data to WebSocket.");
-          }
-        };
-
-        console.log("Recording started...");
-      })
-      .catch((error) => {
-        console.error("Error accessing microphone:", error);
-      });
+  
+    // Step 1: Establish WebSocket connection first
+    connectWebSocket('ws://localhost:8000/TranscribeStreaming'); 
+  
+    ws.onopen = () => {
+      console.log("WebSocket connection established.");
+  
+      // Step 2: Only start recording once WebSocket connection is open
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((stream) => {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+  
+          mediaStreamSource = audioContext.createMediaStreamSource(stream);
+          scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+  
+          mediaStreamSource.connect(scriptProcessor);
+          scriptProcessor.connect(audioContext.destination);
+  
+          // Handle audio data from the microphone
+          scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
+            const audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
+            const pcmData = convertFloat32ToInt16(audioData);
+  
+            // Send audio data to WebSocket
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.send(pcmData.buffer);
+              console.log("Sent audio data to WebSocket.");
+            } else {
+              console.log("WebSocket is not open. Audio not sent.");
+            }
+          };
+  
+          console.log("Recording started...");
+          setIsRecording(true);  // Set the recording state only if recording starts
+        })
+        .catch((error) => {
+          console.error("Error accessing microphone:", error);
+        });
+    };
+  
+    ws.onclose = () => {
+      console.log("WebSocket connection closed.");
+    };
+  
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
   };
 
-  const stopRecording = () => {
-    // Stop MediaRecorder
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-      mediaRecorder.stop(); // Stop the MediaRecorder
-      console.log("MediaRecorder stopped.");
-    }
-
-    // Disconnect and close audio context
-    if (scriptProcessor) {
-      scriptProcessor.disconnect(); // Disconnect script processor
-      console.log("Script processor disconnected.");
-    }
-    if (mediaStreamSource) {
-      mediaStreamSource.disconnect(); // Disconnect media stream source
-      console.log("Media stream source disconnected.");
-    }
-    if (audioContext) {
-      audioContext.close().then(() => {
+  const stopRecording = async () => {
+    try {
+      console.log("Attempting to stop recording...");
+  
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send("submit_response");  // Send stop signal only if WebSocket is open
+        console.log("Sent 'submit_response' to WebSocket.");
+      } else {
+        console.log("WebSocket is not open or already closed, state:", ws ? ws.readyState : "undefined");
+      }
+  
+      // Stop audio processing
+      if (scriptProcessor) {
+        scriptProcessor.disconnect();
+        console.log("Script processor disconnected.");
+      }
+      if (mediaStreamSource) {
+        mediaStreamSource.disconnect();
+        console.log("Media stream source disconnected.");
+      }
+      if (audioContext && audioContext.state !== "closed") {
+        await audioContext.close();
         console.log("Audio context closed.");
-      }).catch((err) => {
-        console.error("Error closing AudioContext:", err);
-      });
+      }
+  
+      // Update the recording state
+      setIsRecording(false);
+      console.log("Recording stopped and state updated.");
+  
+    } catch (error) {
+      console.error("Error stopping recording:", error);
     }
-
-    // Close WebSocket connection
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send("submit_response"); // Send stop signal to WebSocket server
-      ws.close(); // Close WebSocket connection
-      console.log("WebSocket connection closed.");
-    }
-
-    // Update the recording state
-    setIsRecording(false);
-    console.log("Recording stopped and state updated.");
   };
 
   const toggleRecording = () => {
-    // Print when the button is clicked
-    console.log("Recording button clicked. Current recording state:", isRecording);
-
     if (isRecording) {
-      console.log("Stopping the recording...");
-      stopRecording(); // Stop recording when already recording
+      stopRecording();  // Stop recording
     } else {
-      console.log("Starting the recording...");
-      connectWebSocket('ws://localhost:8000/TranscribeStreaming'); // Start WebSocket connection
-      startRecording(); // Start audio recording
+      connectWebSocket('ws://localhost:8000/TranscribeStreaming');  // Connect WebSocket once
+      startRecording();  // Start audio recording
     }
-
-    // Toggle the recording state
-    setIsRecording(!isRecording);
-    console.log("Recording state toggled. New state:", !isRecording);
+  
+    setIsRecording(!isRecording);  // Toggle the recording state
   };
 
   // Utility function to convert Float32Array to Int16Array (required for WebSocket)
