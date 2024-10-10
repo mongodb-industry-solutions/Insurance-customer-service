@@ -19,7 +19,7 @@ const App = () => {
   
     ws = new WebSocket(uri);
   
-    /* ws.onopen = () => {
+    ws.onopen = () => {
       console.log("WebSocket connection established.");
     };
   
@@ -34,7 +34,7 @@ const App = () => {
     ws.onmessage = (message) => {
       console.log("Message from WebSocket server:", message.data);
       setTranscription(message.data);
-    }; */
+    }; 
   };
 
   const startRecording = () => {
