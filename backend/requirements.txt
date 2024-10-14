@@ -1,0 +1,8 @@
+fastapi
+'uvicorn[standard]'
+amazon_transcribe
+httpx
+langchain_mongodb
+langchain_huggingface
+langchain_aws
+python-dotenv
