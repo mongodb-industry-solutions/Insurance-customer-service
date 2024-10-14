@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './App.css'; // Importing CSS for styling
 
 const App = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -104,14 +105,14 @@ const App = () => {
     }
 
     // Step 4: Close the WebSocket connection
-  if (ws.current && (ws.current.readyState === WebSocket.OPEN || ws.current.readyState === WebSocket.CONNECTING)) {
-    ws.current.onclose = () => {
-      console.log("WebSocket connection closed.");
-    };
-    ws.current.close();  // Only close the WebSocket if it's open or connecting
-  } else {
-    console.log("WebSocket is already closed or not initialized.");
-  }
+    if (ws.current && (ws.current.readyState === WebSocket.OPEN || ws.current.readyState === WebSocket.CONNECTING)) {
+      ws.current.onclose = () => {
+        console.log("WebSocket connection closed.");
+      };
+      ws.current.close();  // Only close the WebSocket if it's open or connecting
+    } else {
+      console.log("WebSocket is already closed or not initialized.");
+    }
 
   };
 
@@ -169,18 +170,29 @@ const App = () => {
   }, []);
 
   return (
-    <div className="App">
-      <h1>Audio Streaming</h1>
-      <button onClick={toggleRecording}>
-        {isRecording ? 'Stop Recording' : 'Start Recording'}
-      </button>
-      <div>
-        <h2>Transcription:</h2>
-        <p>{transcription}</p>
+    <div className="app-container">
+      <div className="left-panel">
+        <h2>Suggested questions</h2>
+        <p>How can I add a policy to my insurance?</p>
+        <p>How can I file a claim?</p>
+        <p>How do I make a payment on my policy?</p>
       </div>
-      <div>
-        <h2>API Response:</h2>
-        <p>{apiResult}</p> {/* Display the API result */}
+
+      <div className="separator"></div> {/* Add the separator here */}
+
+      <div className="right-panel">
+        <h1>Audio Streaming</h1>
+        <button onClick={toggleRecording}>
+          {isRecording ? 'Stop Recording' : 'Start Recording'}
+        </button>
+        <div>
+          <h2>Transcription:</h2>
+          <p>{transcription}</p>
+        </div>
+        <div>
+          <h2>API Response:</h2>
+          <p>{apiResult}</p> {/* Display the API result */}
+        </div>
       </div>
     </div>
   );
