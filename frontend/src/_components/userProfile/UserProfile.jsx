@@ -1,13 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useLocation from react-router-dom
 import styles from "./userProfile.module.css";
 
 const UserProfile = () => {
+    const location = useLocation(); // Get the current URL
     const [showAdditionalProfiles, setShowAdditionalProfiles] = useState(false);
     const [selectedProfile, setSelectedProfile] = useState({
         name: "Eddie Grant",
         role: "Claim Adjuster",
         image: "/eddie.png"
     });
+
+    // UseEffect to update default profile based on the URL
+    useEffect(() => {
+        if (location.pathname === "/CustomerService") {
+            setSelectedProfile({
+                name: "Rob Smith",
+                role: "Customer Service",
+                image: "/rob.png"
+            });
+        } else {
+            setSelectedProfile({
+                name: "Eddie Grant",
+                role: "Claim Adjuster",
+                image: "/eddie.png"
+            });
+        }
+    }, [location.pathname]); // Runs every time the pathname changes
 
     const toggleAdditionalProfiles = () => {
         setShowAdditionalProfiles(!showAdditionalProfiles);
@@ -57,7 +76,7 @@ const UserProfile = () => {
                             name="Eddie Grant"
                             role="Claim Adjuster"
                             image="/eddie.png"
-                            onClick={() => switchProfile("Eddie Grant", "Customer Service", "/eddie.png")}
+                            onClick={() => switchProfile("Eddie Grant", "Claim Adjuster", "/eddie.png")}
                         />
                     )}
                 </div>

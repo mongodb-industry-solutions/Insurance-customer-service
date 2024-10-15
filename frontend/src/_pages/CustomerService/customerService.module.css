@@ -1,0 +1,101 @@
+.content {
+    display: flex;
+    height: 100%;
+    /* Ensures the content fills the height of the parent container */
+    margin-top: 220px;
+    position: fixed;
+    overflow-y: scroll;
+    /* Enable vertical scrolling */
+
+}
+
+.leftPanel {
+    flex: 1;
+    /* Each div takes up equal space */
+    border-right: 1px solid #ccc;
+    /* Vertical line between the divs */
+    padding: 50px;
+    /* Adjust as needed */
+    box-sizing: border-box;
+    /* Ensures padding is included in the width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center items horizontally */
+}
+
+.rightPanel {
+    flex: 1;
+    /* Each div takes up equal space */
+    padding: 50px;
+    /* Adjust as needed */
+}
+
+.recordButton {
+    background-color: #FF8484;
+    border-radius: 50px;
+    width: 100px;
+    height: 100px;
+    border: none;
+    box-shadow: 2px 2px 10px 2px rgb(0 0 0 / 8%);
+    cursor: pointer;
+}
+
+.pulsing {
+    animation: pulse 1.5s infinite;
+    background-color: white;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
+}
+
+.suggestionSection{
+    margin-top: 40px;
+    width: max-content;
+}
+
+h3{
+    font-size: 18px;
+    font-weight: 700;
+   
+}
+
+.suggestion {
+    border-radius: 50px;
+    font-size: 16px;
+    padding: 3px 10px;
+    background-color: #F9FBFA;
+}
+
+
+.badge {
+    background-color: #E1F7FF;
+    font-size: 16px;
+    font-weight: 500;
+    color: #0C2657;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-top: 40px;
+}
+
+.answer {
+    font-size: 17px;
+    background-color: #edf0ef;
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: 30px;
+}

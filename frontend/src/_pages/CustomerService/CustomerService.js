@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './App.css'; // Importing CSS for styling
+import styles from "./customerService.module.css";
+
 
 const App = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -16,54 +17,54 @@ const App = () => {
       console.log("WebSocket is already open.");
       return;  // Do not reinitialize the WebSocket if already open
     }
-  
+
     ws.current = new WebSocket(uri);
-  
+
     ws.current.onopen = () => {
       console.log("WebSocket connection established.");
     };
-  
+
     ws.current.onclose = () => {
       console.log("WebSocket connection closed.");
     };
-  
+
     ws.current.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-  
+
     ws.current.onmessage = (message) => {
       console.log("Message from WebSocket server:", message.data);
       setTranscription(message.data);
-    }; 
+    };
   };
 
   const startRecording = () => {
     if (isRecording) {
       return; // Already recording
     }
-  
+
     // Step 1: Establish WebSocket connection first
-    connectWebSocket('ws://localhost:8000/TranscribeStreaming'); 
-  
+    connectWebSocket('ws://localhost:8000/TranscribeStreaming');
+
     ws.current.onopen = () => {
       console.log("WebSocket connection established.");
-  
+
       // Step 2: Only start recording once WebSocket connection is open
       navigator.mediaDevices.getUserMedia({ audio: true })
         .then((stream) => {
           audioContext.current = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
-  
+
           mediaStreamSource.current = audioContext.current.createMediaStreamSource(stream);
           scriptProcessor.current = audioContext.current.createScriptProcessor(4096, 1, 1);
-  
+
           mediaStreamSource.current.connect(scriptProcessor.current);
           scriptProcessor.current.connect(audioContext.current.destination);
-  
+
           // Handle audio data from the microphone
           scriptProcessor.current.onaudioprocess = (audioProcessingEvent) => {
             const audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
             const pcmData = convertFloat32ToInt16(audioData);
-  
+
             // Send audio data to WebSocket
             if (ws.current && ws.current.readyState === WebSocket.OPEN) {
               ws.current.send(pcmData.buffer);
@@ -72,7 +73,7 @@ const App = () => {
               console.log("WebSocket is not open. Audio not sent.");
             }
           };
-  
+
           console.log("Recording started....");
           setIsRecording(true);  // Set the recording state only if recording starts
         })
@@ -80,7 +81,7 @@ const App = () => {
           console.error("Error accessing microphone:", error);
         });
     };
-  
+
   };
 
   const stopRecording = async () => {
@@ -123,7 +124,7 @@ const App = () => {
       connectWebSocket('ws://localhost:8000/TranscribeStreaming');  // Connect WebSocket once
       startRecording();  // Start audio recording
     }
-  
+
     setIsRecording(!isRecording);  // Toggle the recording state
   };
 
@@ -170,28 +171,46 @@ const App = () => {
   }, []);
 
   return (
-    <div className="app-container">
-      <div className="left-panel">
-        <h2>Suggested questions</h2>
-        <p>How can I add a policy to my insurance?</p>
-        <p>How can I file a claim?</p>
-        <p>How do I make a payment on my policy?</p>
-      </div>
+    <div className={styles.content}>
+      <div className={styles.leftPanel}>
+        <h2>Calling...</h2>
 
-      <div className="separator"></div> {/* Add the separator here */}
-
-      <div className="right-panel">
-        <h1>Audio Streaming</h1>
-        <button onClick={toggleRecording}>
-          {isRecording ? 'Stop Recording' : 'Start Recording'}
+        <button
+          className={`${styles.recordButton} ${isRecording ? styles.pulsing : ''}`}
+          onClick={toggleRecording}
+        >
+          {isRecording ? (
+            <img src="/mic-stop.svg" alt="Stop Button" width="30" height="30" />
+          ) : (
+            <img src="/mic-start.svg" alt="Start Button" width="30" height="30" />
+          )}
         </button>
+
+
+        <div className={styles.suggestionSection}>
+          <h3>Try asking ...</h3>
+          <p className={styles.suggestion}>How can I add a policy to my insurance?</p>
+          <p className={styles.suggestion}>How can I file a claim?</p>
+          <p className={styles.suggestion}>How do I make a payment on my policy?</p>
+        </div>
+
         <div>
-          <h2>Transcription:</h2>
+          <h3 className={styles.badge}>Live Transcription</h3>
           <p>{transcription}</p>
         </div>
+
+      </div>
+
+      <div className={styles.rightPanel}>
+        <h2>AI Assistant</h2>
+
         <div>
-          <h2>API Response:</h2>
-          <p>{apiResult}</p> {/* Display the API result */}
+          {/* Customer calling section here */}
+        </div>
+
+        <div>
+          <h3>Suggested Answer</h3>
+          <p className={styles.answer}>{apiResult}</p> {/* Display the API result */}
         </div>
       </div>
     </div>
