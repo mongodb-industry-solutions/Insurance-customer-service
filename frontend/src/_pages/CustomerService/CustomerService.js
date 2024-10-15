@@ -7,10 +7,43 @@ const App = () => {
   const [transcription, setTranscription] = useState('');
   const [apiResult, setApiResult] = useState(''); // New state for API response
 
+  const [showPanels, setShowPanels] = useState(false); // Control visibility of panels
+  const [timer, setTimer] = useState(0); // Timer state
+  const intervalRef = useRef(null); // Reference to store timer interval
+
   let ws = useRef(null); // WebSocket instance
   let audioContext = useRef(null); // AudioContext instance
   let mediaStreamSource = useRef(null); // MediaStreamSource instance
   let scriptProcessor = useRef(null); // ScriptProcessorNode instance
+
+  // Start timer function
+  const startTimer = () => {
+    intervalRef.current = setInterval(() => {
+      setTimer((prevTime) => prevTime + 1);
+    }, 1000);
+  };
+
+  // Stop timer function
+  const stopTimer = () => {
+    clearInterval(intervalRef.current);
+  };
+
+  const acceptCall = () => {
+    setShowPanels(true);
+    startTimer(); // Start the timer when call is accepted
+  };
+
+  const declineCall = () => {
+    stopTimer();
+    setShowPanels(false); // Reset to initial state
+    setTimer(0); // Reset timer
+  };
+
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
 
   const connectWebSocket = (uri) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
@@ -171,48 +204,59 @@ const App = () => {
   }, []);
 
   return (
+
     <div className={styles.content}>
-      <div className={styles.leftPanel}>
-        <h2>Calling...</h2>
 
-        <button
-          className={`${styles.recordButton} ${isRecording ? styles.pulsing : ''}`}
-          onClick={toggleRecording}
-        >
-          {isRecording ? (
-            <img src="/mic-stop.svg" alt="Stop Button" width="30" height="30" />
-          ) : (
-            <img src="/mic-start.svg" alt="Start Button" width="30" height="30" />
-          )}
-        </button>
-
-
-        <div className={styles.suggestionSection}>
-          <h3>Try asking ...</h3>
-          <p className={styles.suggestion}>How can I add a policy to my insurance?</p>
-          <p className={styles.suggestion}>How can I file a claim?</p>
-          <p className={styles.suggestion}>How do I make a payment on my policy?</p>
+      {/* Call Card - Show this only when panels are not shown */}
+      {!showPanels && (
+        <div className={styles.callCard}>
+          <p className={styles.name}>Jane Morris</p>
+          <p className={styles.calling}>is now calling...</p>
+          <button className={styles.acceptBtn} onClick={acceptCall}>Accept</button>
+          <button className={styles.declineBtn} onClick={declineCall}>Decline</button>
         </div>
+      )}
 
-        <div>
-          <h3 className={styles.badge}>Live Transcription</h3>
-          <p>{transcription}</p>
-        </div>
 
-      </div>
+      {showPanels && (
+        <>
+          <div className={styles.leftPanel}>
+            <h2>Call in Progress {formatTime(timer)}</h2>
 
-      <div className={styles.rightPanel}>
-        <h2>AI Assistant</h2>
+            <button
+              className={`${styles.recordButton} ${isRecording ? styles.pulsing : ''}`}
+              onClick={toggleRecording}
+            >
+              {isRecording ? (
+                <img src="/mic-stop.svg" alt="Stop Button" width="30" height="30" />
+              ) : (
+                <img src="/mic-start.svg" alt="Start Button" width="30" height="30" />
+              )}
+            </button>
 
-        <div>
-          {/* Customer calling section here */}
-        </div>
+            <div className={styles.suggestionSection}>
+              <h3>Try asking ...</h3>
+              <p className={styles.suggestion}>How can I add a policy to my insurance?</p>
+              <p className={styles.suggestion}>How can I file a claim?</p>
+              <p className={styles.suggestion}>How do I make a payment on my policy?</p>
+            </div>
 
-        <div>
-          <h3>Suggested Answer</h3>
-          <p className={styles.answer}>{apiResult}</p> {/* Display the API result */}
-        </div>
-      </div>
+            <div>
+              <h3 className={styles.badge}>Live Transcription</h3>
+              <p>{transcription}</p>
+            </div>
+          </div>
+
+          <div className={styles.rightPanel}>
+            <h2>AI Assistant</h2>
+            <div>
+              <h3>Suggested Answer</h3>
+              <p className={styles.answer}>{apiResult}</p>
+            </div>
+          </div>
+        </>
+      )}
+
     </div>
   );
 };
