@@ -1,7 +1,4 @@
-#https://python.langchain.com/docs/integrations/vectorstores/mongodb_atlas/
-#https://python.langchain.com/docs/integrations/text_embedding/huggingfacehub/
 from langchain_mongodb.vectorstores import MongoDBAtlasVectorSearch
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_aws import BedrockEmbeddings
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -14,10 +11,8 @@ DB_NAME = "insurance_customer_service"
 COLLECTION_NAME = "FAQs"
 MONGODB_COLLECTION = client[DB_NAME][COLLECTION_NAME]
 ATLAS_VECTOR_SEARCH_INDEX_NAME = "cohere"
-#ATLAS_VECTOR_SEARCH_INDEX_NAME = "huggingFace"
 
 embeddings = BedrockEmbeddings(model_id="cohere.embed-english-v3")
-#embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 vector_store = MongoDBAtlasVectorSearch(
     collection=MONGODB_COLLECTION,
     embedding=embeddings,
