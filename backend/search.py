@@ -1,6 +1,7 @@
 from langchain_mongodb.vectorstores import MongoDBAtlasVectorSearch
 from langchain_aws import BedrockEmbeddings
 from pymongo import MongoClient
+import boto3
 from dotenv import load_dotenv
 import os
 
@@ -18,16 +19,16 @@ MONGODB_COLLECTION = client[DB_NAME][COLLECTION_NAME]
 ATLAS_VECTOR_SEARCH_INDEX_NAME = "cohere"
 
 # Get AWS credentials and region from environment variables
-aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
-aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
-aws_region = os.getenv("AWS_DEFAULT_REGION")
+#aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
+#aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+#aws_region = os.getenv("AWS_DEFAULT_REGION")
 
 # Initialize BedrockEmbeddings with AWS credentials and region
 embeddings = BedrockEmbeddings(
     model_id="cohere.embed-english-v3",
-    aws_access_key_id=aws_access_key,
-    aws_secret_access_key=aws_secret_key,
-    region=aws_region
+    #aws_access_key_id=aws_access_key,
+    #aws_secret_access_key=aws_secret_key,
+    #region=aws_region
 )
 
 # Initialize MongoDB Atlas Vector Search
