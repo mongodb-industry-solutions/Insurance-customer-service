@@ -6,3 +6,4 @@ frontend/build
 **/.DS_Store
 frontend/.DS_Store
 backend/embeddingsInitializer.py
+.vscode
