@@ -1,7 +1,6 @@
 .content {
     display: flex;
-    height: 100%;
-    /* Ensures the content fills the height of the parent container */
+    height: 100vh; /* Full viewport height */
     margin-top: 220px;
     position: fixed;
     overflow-y: scroll;
@@ -69,27 +68,24 @@ button{
     background-color: #DE473B;
 }
 
-.leftPanel {
-    flex: 1;
-    /* Each div takes up equal space */
-    border-right: 1px solid #ccc;
-    /* Vertical line between the divs */
+.leftPanel, .rightPanel {
+    width: 50%; /* Each panel takes up half of the screen */
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Enable vertical scrolling for content */
     padding: 50px;
-    /* Adjust as needed */
     box-sizing: border-box;
-    /* Ensures padding is included in the width */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* Center items horizontally */
+    position: fixed; /* Prevent movement when other elements appear */
+}
+
+.leftPanel {
+    left: 0;
+    border-right: 1px solid #ccc; /* Divider between panels */
 }
 
 .rightPanel {
-    flex: 1;
-    /* Each div takes up equal space */
-    padding: 50px;
-    /* Adjust as needed */
+    right: 0;
 }
+
 
 
 
@@ -127,7 +123,9 @@ button{
 
 .suggestionSection {
     margin-top: 40px;
-    width: max-content;
+  
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
 }
 
 h3 {
@@ -136,13 +134,27 @@ h3 {
 
 }
 
+.suggestionContainer {
+    display: inline-block;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    height: 100%; /* Ensure the container takes up the full height of the panel */
+   
+}
+
 .suggestion {
     border-radius: 50px;
     font-size: 16px;
-    padding: 3px 10px;
+    padding: 3px 15px;
     background-color: #F9FBFA;
 }
 
+.badgeContainer {
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    
+}
 
 .badge {
     background-color: #E1F7FF;
@@ -154,6 +166,7 @@ h3 {
     margin-top: 40px;
     max-width: fit-content;
 }
+
 
 .answer {
     font-size: 17px;
