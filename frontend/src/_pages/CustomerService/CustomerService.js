@@ -236,13 +236,20 @@ const App = () => {
 
             <div className={styles.suggestionSection}>
               <h3>Try asking ...</h3>
-              <p className={styles.suggestion}>How can I add a policy to my insurance?</p>
-              <p className={styles.suggestion}>How can I file a claim?</p>
-              <p className={styles.suggestion}>How do I make a payment on my policy?</p>
+
+              <div className={styles.suggestionContainer}>
+                <p className={styles.suggestion}>How can I add a policy to my insurance?</p>
+                <p className={styles.suggestion}>How can I file a claim?</p>
+                <p className={styles.suggestion}>How do I make a payment on my policy?</p>
+              </div>
             </div>
 
             <div>
-              <h3 className={styles.badge}>Live Transcription</h3>
+
+              <div className={styles.badgeContainer}>
+                <div className={styles.badge}>Live Transcription</div>
+              </div>
+
               <p>{transcription}</p>
             </div>
           </div>
