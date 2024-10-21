@@ -14,9 +14,6 @@ const Navbar = () => {
       </div>
 
       <div className={styles.links}>
-        <Link to="/imageSearch">Image Search</Link>
-        <Link to="/askLeafy">Ask Leafy</Link>
-        <Link to="/askThePDF">Ask The PDF</Link>
         <Link to="/CustomerService">Customer Service</Link>
       </div>
 

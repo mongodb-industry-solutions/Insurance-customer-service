@@ -1,9 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import * as Realm from "realm-web";
-import ImageSearch from './_pages/ImageSearch/ImageSearch';
-import AskLeafy from './_pages/AskLeafy/AskLeafy';
-import AskThePDF from './_pages/AskThePDF/AskThePDF';
 import CustomerService from './_pages/CustomerService/CustomerService';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -19,9 +16,6 @@ function App() {
         <BrowserRouter>
         <Navbar></Navbar>
           <Routes>
-            <Route path="/imageSearch" element={<ImageSearch />} />
-            <Route path="/askLeafy" element={<AskLeafy />} />
-            <Route path="/askthepdf" element={<AskThePDF />} />
             <Route path="/CustomerService" element={<CustomerService />} />
           </Routes>
         </BrowserRouter>
