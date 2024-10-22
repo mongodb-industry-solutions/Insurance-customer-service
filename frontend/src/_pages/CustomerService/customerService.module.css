@@ -183,20 +183,27 @@ h3 {
     padding: 15px;
     margin-bottom: 10px;
     display: flex;
-    width: 80%;
+    width: max-content;
     /* width: max-content; */
 }
 
-.customerPhoto{
-    width: 60px;
-    margin-right: 60px;
+.customerPhoto {
+    display: flex;
     flex-direction: column;
+    align-items: center; /* Center the images and text */
+    margin-bottom: 10px; /* Space between each photo */
 }
 
-.customerPhoto2{
-    width: 30px;
-    margin-right: 60px;
-    flex-direction: column;
+.customerPhotos {
+    display: flex; /* Stack photos horizontally */
+    flex-direction: column; /* Stack vertically */
+    margin-right: 50px; /* Space between photos and card */
+}
+
+
+.customerPhotoImage {
+    width: 60px; /* Set a fixed width for images */
+    height: auto; /* Maintain aspect ratio */
 }
 
 .photoName {
@@ -226,6 +233,7 @@ h3 {
 }
 
 .card{
+    flex:1;
     display: flex;
     flex-direction: column;
     width: 80%;

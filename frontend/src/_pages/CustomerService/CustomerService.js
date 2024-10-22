@@ -260,20 +260,23 @@ const App = () => {
 
             <div className={styles.customerInfo}>
 
-              <div className={styles.customerPhoto}>
-                <img
-                  src="./jane.png"
-                  alt="Customer Photo"
-                  className={styles.customerPhoto}
-                />
-                <p className={styles.photoName}>Joe Dao</p>
+              <div className={styles.customerPhotos}>
 
-                <img
-                  src="./fi_map-pin.svg"
-                  alt="Customer Photo 2"
-                  className={styles.customerPhoto2}
-                />
-                <p className={styles.photoName}>Jane Doe</p>
+                <div className={styles.customerPhoto}>
+                  <img
+                    src="./jane.png"
+                    alt="Customer Photo"
+                    className={styles.customerPhotoImage}
+                  />
+                  <p className={styles.fieldContent}>Joe Dao</p>
+
+                  <img
+                    src="./fi_map-pin.svg"
+                    alt="Customer Photo 2"
+                    className={styles.customerPhotoImage}
+                  />
+                  <p className={styles.fieldContent}>Boise, Idaho</p>
+                </div>
               </div>
 
               <div className={styles.card}>
