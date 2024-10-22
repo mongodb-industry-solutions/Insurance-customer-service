@@ -175,3 +175,76 @@ h3 {
     border-radius: 20px;
     margin-top: 30px;
 }
+
+.customerInfo{
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.20);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    width: 80%;
+    /* width: max-content; */
+}
+
+.customerPhoto{
+    width: 60px;
+    margin-right: 60px;
+    flex-direction: column;
+}
+
+.customerPhoto2{
+    width: 30px;
+    margin-right: 60px;
+    flex-direction: column;
+}
+
+.photoName {
+    margin: 0; /* Reset margin */
+    font-size: 13px; /* Adjust font size as needed */
+    text-align: left; /* Center align the text */
+    /* white-space: nowrap; */
+    max-width: 100%;
+}
+
+.fieldTitle {
+    color: #889397;
+    font-weight: 700;
+    /* Make the font thicker */
+    font-size: 13px;
+}
+
+.fieldContent {
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+.fieldWrapper {
+    flex: 1;
+    margin-right: 10px;
+    /* Adjust spacing between each field */
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.row .fieldWrapper:last-child {
+    margin-right: 0;
+}
+
+.line {
+    border: none; /* Remove default styling */
+    border-top: 1px solid #ccc; /* Set the line color */
+    margin: 10px 0; /* Space above and below the line */
+    width: 100%; /* Full width */
+}
