@@ -290,12 +290,12 @@ const App = () => {
                   </div>
 
                   <div className={styles.fieldWrapper}>
-                    <p className={styles.fieldTitle}>Customer Since:</p>
+                    <p className={styles.fieldTitle}>Customer Since</p>
                     <p className={styles.fieldContent}>01/01/2020</p>
                   </div>
 
                   <div className={styles.fieldWrapper}>
-                    <p className={styles.fieldTitle}>Customer Sentiment:</p>
+                    <p className={styles.fieldTitle}>Customer Sentiment</p>
                     <p className={styles.fieldContentSentiment}>Positive</p>
                   </div>
 
@@ -305,17 +305,17 @@ const App = () => {
 
                 <div className={styles.row}>
                   <div className={styles.fieldWrapper}>
-                    <p className={styles.fieldTitle}>Active Policies:</p>
+                    <p className={styles.fieldTitle}>Active Policies</p>
                     <p className={styles.fieldContent}>Car Insurance</p>
                   </div>
 
                   <div className={styles.fieldWrapper}>
-                    <p className={styles.fieldTitle}>Current Premium:</p>
+                    <p className={styles.fieldTitle}>Current Premium</p>
                     <p className={styles.fieldContent}>$230</p>
                   </div>
 
                   <div className={styles.fieldWrapper}>
-                    <p className={styles.fieldTitle}>Active Claims:</p>
+                    <p className={styles.fieldTitle}>Active Claims</p>
                     <p className={styles.fieldContentClaim}>Claim XDS</p>
                   </div>
 
