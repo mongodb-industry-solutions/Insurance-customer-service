@@ -268,14 +268,16 @@ const App = () => {
                     alt="Customer Photo"
                     className={styles.customerPhotoImage}
                   />
-                  <p className={styles.fieldContent}>Joe Dao</p>
+                  <p className={styles.fieldContent}>Jane Morris</p>
 
-                  <img
-                    src="./fi_map-pin.svg"
-                    alt="Customer Photo 2"
-                    className={styles.customerPhotoImage}
-                  />
-                  <p className={styles.fieldContent}>Boise, Idaho</p>
+                  <div className={styles.customerLocation}>
+                    <img
+                      src="./fi_map-pin.svg"
+                      alt="Customer Photo 2"
+                      className={styles.customerIcon}
+                    />
+                    <p className={styles.fieldContentLocation}>Boise, Idaho</p>
+                  </div>
                 </div>
               </div>
 
@@ -283,8 +285,8 @@ const App = () => {
                 <div className={styles.row}>
 
                   <div className={styles.fieldWrapper}>
-                    <p className={styles.fieldTitle}>Name:</p>
-                    <p className={styles.fieldContent}>Jane</p>
+                    <p className={styles.fieldTitle}>DoB</p>
+                    <p className={styles.fieldContent}>05/02/1985</p>
                   </div>
 
                   <div className={styles.fieldWrapper}>
@@ -294,7 +296,7 @@ const App = () => {
 
                   <div className={styles.fieldWrapper}>
                     <p className={styles.fieldTitle}>Customer Sentiment:</p>
-                    <p className={styles.fieldContent}>Positive</p>
+                    <p className={styles.fieldContentSentiment}>Positive</p>
                   </div>
 
                 </div>
@@ -314,7 +316,7 @@ const App = () => {
 
                   <div className={styles.fieldWrapper}>
                     <p className={styles.fieldTitle}>Active Claims:</p>
-                    <p className={styles.fieldContent}>Claim XDS</p>
+                    <p className={styles.fieldContentClaim}>Claim XDS</p>
                   </div>
 
                 </div>
@@ -328,9 +330,10 @@ const App = () => {
             </div>
           </div>
         </>
-      )}
+      )
+      }
 
-    </div>
+    </div >
   );
 };
 

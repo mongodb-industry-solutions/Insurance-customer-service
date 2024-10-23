@@ -197,7 +197,7 @@ h3 {
 .customerPhotos {
     display: flex; /* Stack photos horizontally */
     flex-direction: column; /* Stack vertically */
-    margin-right: 50px; /* Space between photos and card */
+    margin-right: 20px; /* Space between photos and card */
 }
 
 
@@ -218,32 +218,46 @@ h3 {
     color: #889397;
     font-weight: 700;
     /* Make the font thicker */
-    font-size: 13px;
+    font-size: 14px;    
+
 }
 
 .fieldContent {
-    font-size: 16px;
+    font-size: 14px;
     margin-top: 2px;
+    font-weight: bold;
+}
+
+.fieldContentSentiment {
+    font-size: 14px;
+    margin-top: 2px;
+    background-color: #dcf95c;
+    border-radius: 15px;
+    color: #097f46;
+    font-weight: bold;
+    padding: 2px 8px;
+    width: fit-content;
 }
 
 .fieldWrapper {
     flex: 1;
     margin-right: 10px;
-    /* Adjust spacing between each field */
+    min-width: 150px; /* Set a minimum width to ensure titles align */
+    max-width: 250px;
 }
 
 .card{
     flex:1;
     display: flex;
     flex-direction: column;
-    width: 80%;
+    /* width: 100%; */
 }
 
 .row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px;
     width: 100%;
+    text-align: left;
 }
 
 .row .fieldWrapper:last-child {
@@ -255,4 +269,28 @@ h3 {
     border-top: 1px solid #ccc; /* Set the line color */
     margin: 10px 0; /* Space above and below the line */
     width: 100%; /* Full width */
+}
+
+.customerLocation{
+    display: inline-flex;
+}
+
+.fieldContentLocation {
+    font-size: 14px;
+    margin-top: 2px;
+    padding-top: 30px;
+    padding-left: 5px;
+}
+
+.customerIcon {
+    width: 20px; /* Set a fixed width for images */
+    height: auto;
+    padding-top: 15px; 
+}
+
+.fieldContentClaim {
+    font-size: 14px;
+    margin-top: 2px;
+    font-weight: bold;
+    text-decoration: underline; 
 }
