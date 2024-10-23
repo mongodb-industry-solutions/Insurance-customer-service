@@ -270,12 +270,15 @@ const App = () => {
                   />
                   <p className={styles.fieldContent}>Joe Dao</p>
 
-                  <img
-                    src="./fi_map-pin.svg"
-                    alt="Customer Photo 2"
-                    className={styles.customerPhotoImage}
-                  />
-                  <p className={styles.fieldContent}>Boise, Idaho</p>
+                  <div className={styles.badgeContainer}>
+                    <img
+                      src="./fi_map-pin.svg"
+                      alt="Customer Photo 2"
+                      className={styles.PinIconImage}
+                    />
+                    <p className={styles.fieldContent} style={{margin: '0px 0px 0px 4px'}}>Boise, Idaho</p>
+                  </div>
+
                 </div>
               </div>
 

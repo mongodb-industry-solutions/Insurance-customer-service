@@ -190,8 +190,10 @@ h3 {
 .customerPhoto {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center; /* Center the images and text */
     margin-bottom: 10px; /* Space between each photo */
+    height: 100%;
 }
 
 .customerPhotos {
@@ -203,6 +205,11 @@ h3 {
 
 .customerPhotoImage {
     width: 60px; /* Set a fixed width for images */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.PinIconImage {
+    width: 20px; /* Set a fixed width for images */
     height: auto; /* Maintain aspect ratio */
 }
 
@@ -224,6 +231,7 @@ h3 {
 .fieldContent {
     font-size: 16px;
     margin-top: 2px;
+    font-weight: bold;
 }
 
 .fieldWrapper {
