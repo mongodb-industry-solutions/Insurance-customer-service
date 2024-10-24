@@ -311,7 +311,7 @@ const App = () => {
 
                   <div className={styles.fieldWrapper}>
                     <p className={styles.fieldTitle}>Current Premium</p>
-                    <p className={styles.fieldContent}>$230</p>
+                    <p className={styles.fieldContent}>$230/month</p>
                   </div>
 
                   <div className={styles.fieldWrapper}>
