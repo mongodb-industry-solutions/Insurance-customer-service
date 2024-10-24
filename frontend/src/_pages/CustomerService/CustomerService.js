@@ -255,16 +255,85 @@ const App = () => {
           </div>
 
           <div className={styles.rightPanel}>
-            <h2>AI Assistant</h2>
+
+            <h2 id='header'>AI Assistant</h2>
+
+            <div className={styles.customerInfo}>
+
+              <div className={styles.customerPhotos}>
+
+                <div className={styles.customerPhoto}>
+                  <img
+                    src="./jane.png"
+                    alt="Customer Photo"
+                    className={styles.customerPhotoImage}
+                  />
+                  <p className={styles.fieldContent}>Jane Morris</p>
+
+                  <div className={styles.customerLocation}>
+                    <img
+                      src="./fi_map-pin.svg"
+                      alt="Customer Photo 2"
+                      className={styles.customerIcon}
+                    />
+                    <p className={styles.fieldContentLocation}>Boise, Idaho</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.card}>
+                <div className={styles.row}>
+
+                  <div className={styles.fieldWrapper}>
+                    <p className={styles.fieldTitle}>DoB</p>
+                    <p className={styles.fieldContent}>05/02/1985</p>
+                  </div>
+
+                  <div className={styles.fieldWrapper}>
+                    <p className={styles.fieldTitle}>Customer Since</p>
+                    <p className={styles.fieldContent}>01/01/2020</p>
+                  </div>
+
+                  <div className={styles.fieldWrapper}>
+                    <p className={styles.fieldTitle}>Customer Sentiment</p>
+                    <p className={styles.fieldContentSentiment}>Positive</p>
+                  </div>
+
+                </div>
+
+                <hr className={styles.line} />
+
+                <div className={styles.row}>
+                  <div className={styles.fieldWrapper}>
+                    <p className={styles.fieldTitle}>Active Policies</p>
+                    <p className={styles.fieldContent}>Car Insurance</p>
+                  </div>
+
+                  <div className={styles.fieldWrapper}>
+                    <p className={styles.fieldTitle}>Current Premium</p>
+                    <p className={styles.fieldContent}>$230</p>
+                  </div>
+
+                  <div className={styles.fieldWrapper}>
+                    <p className={styles.fieldTitle}>Active Claims</p>
+                    <p className={styles.fieldContentClaim}>Claim XDS</p>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
             <div>
               <h3>Suggested Answer</h3>
               <p className={styles.answer}>{apiResult}</p>
             </div>
           </div>
         </>
-      )}
+      )
+      }
 
-    </div>
+    </div >
   );
 };
 

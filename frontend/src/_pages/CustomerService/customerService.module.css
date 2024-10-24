@@ -175,3 +175,122 @@ h3 {
     border-radius: 20px;
     margin-top: 30px;
 }
+
+.customerInfo{
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.20);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    width: max-content;
+    /* width: max-content; */
+}
+
+.customerPhoto {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the images and text */
+    margin-bottom: 15px; /* Space between each photo */
+    margin-top: 15px;
+}
+
+.customerPhotos {
+    display: flex; /* Stack photos horizontally */
+    flex-direction: column; /* Stack vertically */
+    margin-right: 20px; /* Space between photos and card */
+}
+
+
+.customerPhotoImage {
+    width: 70px; /* Set a fixed width for images */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.photoName {
+    margin: 0; /* Reset margin */
+    font-size: 13px; /* Adjust font size as needed */
+    text-align: left; /* Center align the text */
+    /* white-space: nowrap; */
+    max-width: 100%;
+}
+
+.fieldTitle {
+    color: #889397;
+    font-weight: 700;
+    /* Make the font thicker */
+    font-size: 14px;    
+
+}
+
+.fieldContent {
+    font-size: 14px;
+    margin-top: 2px;
+    font-weight: bold;
+}
+
+.fieldContentSentiment {
+    font-size: 14px;
+    margin-top: 2px;
+    background-color: #dcf95c;
+    border-radius: 15px;
+    color: #097f46;
+    font-weight: bold;
+    padding: 2px 8px;
+    width: fit-content;
+}
+
+.fieldWrapper {
+    flex: 1;
+    margin-right: 10px;
+    min-width: 150px; /* Set a minimum width to ensure titles align */
+    max-width: 250px;
+}
+
+.card{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    /* width: 100%; */
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+}
+
+.row .fieldWrapper:last-child {
+    margin-right: 0;
+}
+
+.line {
+    border: none; /* Remove default styling */
+    border-top: 1px solid #ccc; /* Set the line color */
+    margin: 10px 0; /* Space above and below the line */
+    width: 100%; /* Full width */
+}
+
+.customerLocation{
+    display: inline-flex;
+}
+
+.fieldContentLocation {
+    font-size: 14px;
+    margin-top: 2px;
+    padding-top: 10px;
+    padding-left: 5px;
+}
+
+.customerIcon {
+    width: 20px; /* Set a fixed width for images */
+    height: auto;
+}
+
+.fieldContentClaim {
+    font-size: 14px;
+    margin-top: 2px;
+    font-weight: bold;
+    text-decoration: underline; 
+}
