@@ -238,7 +238,7 @@ const App = () => {
               <h3>Try asking ...</h3>
 
               <div className={styles.suggestionContainer}>
-                <p className={styles.suggestion}>How can I add a policy to my insurance?</p>
+                <p className={styles.suggestion}>How can I add a driver to my insurance?</p>
                 <p className={styles.suggestion}>How can I file a claim?</p>
                 <p className={styles.suggestion}>How do I make a payment on my policy?</p>
               </div>
