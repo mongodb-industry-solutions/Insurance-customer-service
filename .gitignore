@@ -11,3 +11,4 @@ backend/embeddingsInitializer.py
 docker-compose-ecs.yml
 ecs-params.yml
 backend/__pycache__
+frontend/.env
