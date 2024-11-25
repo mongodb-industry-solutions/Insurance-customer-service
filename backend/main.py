@@ -28,6 +28,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def status():
+    return {"status": "Ok"}
+
 @app.websocket("/TranscribeStreaming")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
