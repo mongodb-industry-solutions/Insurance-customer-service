@@ -6,3 +6,4 @@ langchain_mongodb
 langchain_huggingface
 langchain_aws
 python-dotenv
+boto3

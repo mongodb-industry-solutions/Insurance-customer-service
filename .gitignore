@@ -3,7 +3,11 @@ frontend/node_modules
 frontend/build
 .venv
 .DS_Store
+virtual
 **/.DS_Store
 frontend/.DS_Store
 backend/embeddingsInitializer.py
 .vscode
+docker-compose-ecs.yml
+ecs-params.yml
+backend/__pycache__
