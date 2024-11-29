@@ -6,10 +6,10 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from amazon_transcribe.client import TranscribeStreamingClient
 from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
-import httpx
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from search import semantic_search
+
+logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
@@ -35,9 +35,10 @@ def status():
 @app.websocket("/TranscribeStreaming")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    logging.info("WebSocket connection accepted.")
     websocket_open = True
-    stop_audio_stream = False  # Flag to indicate when to stop the audio stream
-    audio_queue = asyncio.Queue()  # Queue for incoming audio data
+    stop_audio_stream = False
+    audio_queue = asyncio.Queue()
 
     class MyEventHandler(TranscriptResultStreamHandler):
         def __init__(self, output_stream, websocket):
@@ -46,18 +47,18 @@ async def websocket_endpoint(websocket: WebSocket):
             self.final_transcript = ""
 
         async def handle_transcript_event(self, transcript_event: TranscriptEvent):
-            if websocket_open:  # Check WebSocket state
+            if websocket_open:
                 results = transcript_event.transcript.results
                 for result in results:
                     if result.is_partial:
                         continue
                     for alt in result.alternatives:
-                        print(alt.transcript)  # Log intermediate transcript <----------
+                        logging.info(f"Transcript: {alt.transcript}")
                         self.final_transcript += alt.transcript + " "
                         await self.websocket.send_text(alt.transcript)
 
         async def send_final_transcript(self):
-            if websocket_open:  # Check WebSocket state
+            if websocket_open:
                 await self.websocket.send_text(f"Final Transcript: {self.final_transcript.strip()}")
 
     async def mic_stream():
@@ -76,18 +77,19 @@ async def websocket_endpoint(websocket: WebSocket):
                 break
         await stream.input_stream.end_stream()
 
-    handler = None  # Initialize handler
+    handler = None
 
     try:
-        region = os.getenv("AWS_REGION", "us-east-2")
-
+        region = os.getenv("AWS_REGION") # us-east-1 
         client = TranscribeStreamingClient(region=region)
 
+        logging.info("Starting AWS Transcribe stream.")
         stream = await client.start_stream_transcription(
             language_code="en-US",
             media_sample_rate_hz=16000,
             media_encoding="pcm",
         )
+        logging.info("AWS Transcribe stream started.")
 
         handler = MyEventHandler(stream.output_stream, websocket)
         send_task = asyncio.create_task(write_chunks(stream))
@@ -95,17 +97,18 @@ async def websocket_endpoint(websocket: WebSocket):
 
         while True:
             message = await websocket.receive()
+            logging.info(f"Received message: {message}")
             if message["type"] == "websocket.receive":
                 if "bytes" in message:
                     audio_chunk = message["bytes"]
                     await audio_queue.put(audio_chunk)
                 elif "text" in message:
                     text_message = message["text"]
-                    logging.info(f"Received message: {text_message}")  # Log received message
+                    logging.info(f"Received text message: {text_message}")
                     if text_message == "submit_response":
-                        print("received:", "submit_response")
-                        stop_audio_stream = True  # Signal to stop the audio stream
-                        await send_task  # Wait for the audio stream to finish gracefully
+                        logging.info("Received 'submit_response' command.")
+                        stop_audio_stream = True
+                        await send_task
                         break
 
         await handler.send_final_transcript()
@@ -116,18 +119,18 @@ async def websocket_endpoint(websocket: WebSocket):
         logging.error(f"Unexpected error: {e}")
 
     finally:
-        websocket_open = False  # Update WebSocket state
+        websocket_open = False
+        logging.info("WebSocket connection closed.")
         if handler:
-            await handler.send_final_transcript()  # Ensure final transcript is sent in all cases
+            await handler.send_final_transcript()
         await websocket.close()
-
 
 @app.post("/textSearch")
 async def text_search(request: Request):
     data = await request.json()
     question = data.get("transcript")
     answer = semantic_search(question)
-    print(answer)
+    logging.info(f"Semantic search answer: {answer}")
     return {"message": answer}
 
 if __name__ == "__main__":
