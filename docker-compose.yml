@@ -1,5 +1,5 @@
 services:
-  mongodb-image-search-front:
+  mongodb-customer-service-front:
     build:
       context: ./
       dockerfile: dockerfile.frontend
@@ -7,8 +7,8 @@ services:
     ports:
       - "3000:3000"
     restart: always
-    container_name: image-vector-search-front
-  mongodb-image-search-back:
+    container_name: customer-service-front
+  mongodb-customer-service-back:
     build:
       context: ./
       dockerfile: dockerfile.backend
@@ -16,4 +16,4 @@ services:
     ports:
       - "8000:8000"
     restart: always
-    container_name: image-vector-search-back
+    container_name: customer-service-back
