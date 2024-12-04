@@ -3,7 +3,7 @@ services:
     build:
       context: ./
       dockerfile: dockerfile.frontend
-    image: vector-search-front:latest
+    image: customer-service-front:latest
     ports:
       - "3000:3000"
     restart: always
@@ -12,7 +12,7 @@ services:
     build:
       context: ./
       dockerfile: dockerfile.backend
-    image: vector-search-back:latest
+    image: customer-service-back:latest
     ports:
       - "8000:8000"
     restart: always
