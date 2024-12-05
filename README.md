@@ -8,14 +8,19 @@ MongoDB shines in this solution by providing a robust platform for storing and q
 
 Learn more about MongoDB [here](https://www.mongodb.com/docs/manual/).
 
+## Blog Post
+
+For a detailed exploration of this demo and its impact on customer service in the insurance industry, check out our blog post: [AI-Powered Call Centers: A New Era of Customer Service](https://www.mongodb.com/blog/post/ai-powered-call-centers-new-era-of-customer-service).
+
+
 ## High Level Architecture
 
 <img src="https://webassets.mongodb.com/_com_assets/cms/Screenshot 2024-11-26 at 7.17.25 AM-d00hiuu0s9.png" alt="Diagram showing the system architecture. The customer reaches out to customer service, who then utilizes Cohere and Amazon Transcribe with data stored on MongoDB Atlas.">
 
 ## Tech Stack
 
-- [React]([https://nextjs.org/docs/app](https://react.dev/)) for the Frontend
-- [FastAPI] for the Backend
+- [React](https://react.dev/) for the Frontend
+- [FastAPI](https://fastapi.tiangolo.com/) for the Backend
 - [MongoDB Atlas](https://www.mongodb.com/atlas/database) for the database
 - [CSS Modules](https://github.com/css-modules/css-modules) for styling
 
