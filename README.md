@@ -32,6 +32,41 @@ Before you begin, ensure you have met the following requirements:
 - Node.js 14 or higher
 - Python 3.9 or higher
 
+## Importing FAQs into MongoDB Atlas
+
+To enhance the functionality of the demo, you need to import the `insurance_customer_service.FAQs.json` file into your MongoDB Atlas database. This file contains frequently asked questions, their corresponding answers and the Cohere Embeddings which will be used to improve customer service interactions.
+
+### Steps to Import the JSON File Using MongoDB Compass
+
+1. **Set Up MongoDB Atlas:**
+   - If you haven't already, create a MongoDB Atlas account and set up a cluster. Follow the [MongoDB Atlas Getting Started Guide](https://www.mongodb.com/docs/atlas/getting-started/) for detailed instructions.
+   - Once your cluster is ready, obtain the connection string. You can find this in the "Connect" section of your cluster dashboard.
+
+2. **Download and Install MongoDB Compass:**
+   - Download MongoDB Compass from the [official website](https://www.mongodb.com/try/download/compass) and install it on your machine.
+
+3. **Connect to MongoDB Atlas Using Compass:**
+   - Open MongoDB Compass.
+   - In the "New Connection" dialog, paste your MongoDB Atlas connection string.
+   - Click "Connect" to establish a connection to your Atlas cluster.
+
+4. **Import the JSON File:**
+   - Once connected, create a database called `insurance_customer_service`.
+   - Create a collection called `FAQS`.
+   - Click on "Add Data" > "Import File".
+   - Choose the `insurance_customer_service.FAQs.json` file from your local machine.
+   - Click "Import" to load the data into your collection.
+
+5. **Verify the Import:**
+   - After importing, you can verify that the data has been successfully added by browsing the `FAQS` collection in your MongoDB Atlas database.
+
+### Note
+
+- Ensure that your MongoDB Atlas connection string includes the necessary credentials and permissions to write to the database.
+- The import process in Compass is straightforward and provides a graphical interface to manage your data easily.
+
+By following these steps, you will have the FAQs data imported into your MongoDB Atlas database, ready to be used by the demo application.
+
 ## Run it locally
 
 ### Frontend
