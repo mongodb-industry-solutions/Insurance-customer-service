@@ -72,7 +72,7 @@ By following these steps, you will have the FAQs data imported into your MongoDB
 ### Frontend
 
 1. Navigate to the `frontend` folder.
-2. Create a `.env`file:
+2. Create a `.env` file:
 ```
 REACT_APP_WEBSOCKET_URL=ws://localhost:8000/TranscribeStreaming
 REACT_APP_TEXT_SEARCH_URL=http://localhost:8000/textSearch
@@ -90,7 +90,7 @@ npm run dev
 ### Backend 
 
 1. Navigate to the `backed` folder.
-2. Create a `.env`file:
+2. Create a `.env` file:
 ```
 MONGO_URI=
 AWS_ACCESS_KEY_ID=
