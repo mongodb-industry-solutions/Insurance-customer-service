@@ -34,7 +34,7 @@ Before you begin, ensure you have met the following requirements:
 
 ## Importing FAQs into MongoDB Atlas
 
-To enhance the functionality of the demo, you need to import the `insurance_customer_service.FAQs.json` file into your MongoDB Atlas database. This file contains frequently asked questions, their corresponding answers and the Cohere Embeddings which will be used to improve customer service interactions.
+To enhance the functionality of the demo, you need to import the `data/insurance_customer_service.FAQs.json` file into your MongoDB Atlas database. This file contains frequently asked questions, their corresponding answers and the Cohere Embeddings which will be used to improve customer service interactions.
 
 ### Steps to Import the JSON File Using MongoDB Compass
 
