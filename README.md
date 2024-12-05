@@ -1,4 +1,4 @@
-# Insurance-customer-service
+# Insurance Customer Service
 
 The demo showcases howMongoDB can revolutionize call center operations for insurance companies by converting call recordings into searchable vectors. This transformation allows agents to quickly access relevant information, improving customer service and enhancing customer satisfaction.
 
