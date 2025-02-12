@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+# Next.js Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Getting Started 
 
-## Available Scripts
+1. Install dependencies by running:
+```bash
+npm install
+```
+2. Start the frontend development server with:
+````bash
+npm run dev
+````
+3. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface to interact with the image vector search demo.
 
-In the project directory, you can run:
 
-### `npm start`
+## Understanding Next.js
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Routes
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+In Next.js, routes are created inside the `app` directory. Here's a breakdown of how the routing works:
 
-### `npm test`
+#### API Routes
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- The `api` folder is used for creating API routes.
+- We have two example routes for demonstrating how API routes work:
 
-### `npm run build`
+  - **GET request to MongoDB**:  
+    [http://localhost:3000/api/mongodb](http://localhost:3000/api/mongodb)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  - **Basic test route**:  
+    [http://localhost:3000/api/test](http://localhost:3000/api/test)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Dynamic Routes
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- If you create a new folder inside the `app` directory, a route will be automatically created based on the folder name.
+- For example, creating a folder called `example` will make it accessible at:
+  [http://localhost:3000/example](http://localhost:3000/example)
 
-### `npm run eject`
+Each route includes a `layout.js` and `page.js` to define the structure and content.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### Root Route
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- The global root route (home page) is accessible at:
+  [http://localhost:3000](http://localhost:3000)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+This page is managed by the `layout.js` and `page.js` inside the `app` directory.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+### Components
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Components are located outside the `app` folder, inside the `components` directory.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+There are two example components:
 
-### Code Splitting
+1. **MongoDB Leafy Green System Design**: Demonstrates how to integrate MongoDB with your component.
+2. **Test Component**: Shows how to create a simple test component that includes both a `.jsx` file and a `.module.css` file for styling.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### CSS
 
-### Analyzing the Bundle Size
+Each component should have its own dedicated CSS file. For styling, we recommend using CSS Modules (e.g., `component.module.css`) to scope styles locally to the component.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### Images
 
-### Making a Progressive Web App
+For adding images, we use `Image` from `next/image`, which is provided by Next.js. This component optimizes images for caching and better performance.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Images should be stored in the `public` folder inside the `frontend` directory.
+- Next.js automatically handles these images, making them easily accessible.
 
-### Advanced Configuration
+For an example, check out the `test.jsx` component.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### MongoDB Connections
 
-### Deployment
+This template includes a `lib` folder with a utility for connecting to MongoDB. 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Inside the `lib` folder, you’ll find a function called `connectToDatabase`. To use it, simply import the function and pass the necessary parameters to specify which database and collection you want to connect to.
 
-### `npm run build` fails to minify
+The `connectToDatabase` function manages the connection and can be reused across your application for efficient MongoDB interactions.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### .env.local
+
+Next.js natively supports `.env.local` files, so you don't need to install additional libraries like `dotenv`. Simply create a `.env.local` file, and Next.js will automatically detect and load it.
+
+Make sure to place the `.env.local` file inside the `frontend` folder for proper configuration.

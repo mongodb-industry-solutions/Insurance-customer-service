@@ -1,7 +1,6 @@
 from langchain_mongodb.vectorstores import MongoDBAtlasVectorSearch
 from langchain_aws import BedrockEmbeddings
 from pymongo import MongoClient
-import boto3
 from dotenv import load_dotenv
 import os
 from bedrock_client import BedrockClient
