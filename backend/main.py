@@ -1,4 +1,4 @@
-#https://medium.com/@atulkumar_68871/building-a-streaming-speech-to-text-application-with-fastapi-and-amazon-transcribe-6203d857375a
+# https://medium.com/@atulkumar_68871/building-a-streaming-speech-to-text-application-with-fastapi-and-amazon-transcribe-6203d857375a
 import asyncio
 import os
 import logging
@@ -8,17 +8,13 @@ from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
 from fastapi.middleware.cors import CORSMiddleware
 from search import semantic_search
+import concurrent.futures
+from concurrent.futures import _base
+from starlette.websockets import WebSocketState
 
 logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
-
-origins = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:8000"
-]
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,9 +24,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
-def status():
-    return {"status": "Ok"}
+async def root():
+    return {"status": "Server is running!"}
+
 
 @app.websocket("/TranscribeStreaming")
 async def websocket_endpoint(websocket: WebSocket):
@@ -47,7 +45,8 @@ async def websocket_endpoint(websocket: WebSocket):
             self.final_transcript = ""
 
         async def handle_transcript_event(self, transcript_event: TranscriptEvent):
-            if websocket_open:
+            # Only send if websocket is still connected.
+            if self.websocket.client_state == WebSocketState.CONNECTED:
                 results = transcript_event.transcript.results
                 for result in results:
                     if result.is_partial:
@@ -55,11 +54,22 @@ async def websocket_endpoint(websocket: WebSocket):
                     for alt in result.alternatives:
                         logging.info(f"Transcript: {alt.transcript}")
                         self.final_transcript += alt.transcript + " "
-                        await self.websocket.send_text(alt.transcript)
+                        try:
+                            if self.websocket.client_state == WebSocketState.CONNECTED:
+                                await self.websocket.send_text(alt.transcript)
+                        except Exception as e:
+                            logging.info(f"Ignoring send error during transcript event: {e}")
 
         async def send_final_transcript(self):
-            if websocket_open:
-                await self.websocket.send_text(f"Final Transcript: {self.final_transcript.strip()}")
+            # Only attempt to send if connection is active.
+            if self.websocket.client_state == WebSocketState.CONNECTED:
+                try:
+                    await self.websocket.send_text(
+                        f"Final Transcript: {self.final_transcript.strip()}"
+                    )
+                except Exception as e:
+                    logging.info(f"Error sending final transcript: {e}")
+
 
     async def mic_stream():
         while True:
@@ -69,18 +79,40 @@ async def websocket_endpoint(websocket: WebSocket):
             yield indata, None
 
     async def write_chunks(stream):
-        async for chunk, _ in mic_stream():
+        try:
+            async for chunk, _ in mic_stream():
+                try:
+                    await stream.input_stream.send_audio_event(audio_chunk=chunk)
+                except (OSError, concurrent.futures._base.InvalidStateError) as e:
+                    logging.error(f"Audio event error: {e}")
+                    break
+        except asyncio.CancelledError:
+            logging.info("write_chunks task was cancelled.")
+        finally:
             try:
-                await stream.input_stream.send_audio_event(audio_chunk=chunk)
-            except OSError as e:
-                logging.error(f"OSError: {e}")
-                break
-        await stream.input_stream.end_stream()
+                await stream.input_stream.end_stream()
+            except (concurrent.futures._base.InvalidStateError, asyncio.CancelledError) as e:
+                logging.info(f"Ignoring error ending stream: {e}")
+            except Exception as e:
+                logging.info(f"Error ending stream: {e}")
 
     handler = None
 
+    _original_set_result = _base.Future.set_result
+
+    def safe_set_result(self, result):
+        if self.cancelled():
+            return
+        try:
+            _original_set_result(self, result)
+        except _base.InvalidStateError:
+            # If the future is already in a cancelled state, ignore.
+            pass
+
+    _base.Future.set_result = safe_set_result
+
     try:
-        region = os.getenv("AWS_REGION") # us-east-1 
+        region = os.getenv("AWS_REGION")  # us-east-1
         client = TranscribeStreamingClient(region=region)
 
         logging.info("Starting AWS Transcribe stream.")
@@ -95,9 +127,20 @@ async def websocket_endpoint(websocket: WebSocket):
         send_task = asyncio.create_task(write_chunks(stream))
         handle_task = asyncio.create_task(handler.handle_events())
 
-        while True:
-            message = await websocket.receive()
+        while websocket_open:
+            try:
+                message = await websocket.receive()
+            except Exception as e:
+                logging.info(f"WebSocket receive error: {e}")
+                break
+
             logging.info(f"Received message: {message}")
+
+            # If we get a disconnect message, exit the loop immediately.
+            if message.get("type") == "websocket.disconnect":
+                logging.info("Received disconnect message, exiting loop.")
+                break
+
             if message["type"] == "websocket.receive":
                 if "bytes" in message:
                     audio_chunk = message["bytes"]
@@ -107,8 +150,9 @@ async def websocket_endpoint(websocket: WebSocket):
                     logging.info(f"Received text message: {text_message}")
                     if text_message == "submit_response":
                         logging.info("Received 'submit_response' command.")
-                        stop_audio_stream = True
-                        await send_task
+                        stop_audio_stream = True  # Signal mic_stream to stop
+                        # Allow mic_stream to finish draining
+                        await asyncio.sleep(0.5)
                         break
 
         await handler.send_final_transcript()
@@ -121,9 +165,21 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         websocket_open = False
         logging.info("WebSocket connection closed.")
+        # Cancel any pending tasks if needed
+        for task in [send_task, handle_task]:
+            if not task.done():
+                task.cancel()
         if handler:
-            await handler.send_final_transcript()
-        await websocket.close()
+            try:
+                await handler.send_final_transcript()
+            except Exception as e:
+                logging.error(f"Error sending final transcript: {e}")
+        # Try to close the WebSocket (ignore errors if already closed)
+        try:
+            await websocket.close()
+        except RuntimeError as e:
+            logging.info(f"WebSocket already closed: {e}")
+
 
 @app.post("/textSearch")
 async def text_search(request: Request):
@@ -133,6 +189,3 @@ async def text_search(request: Request):
     logging.info(f"Semantic search answer: {answer}")
     return {"message": answer}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, ws_ping_interval=None)

@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import styles from "./customerService.module.css";
+"use client";
 
-const App = () => {
+import React, { useState, useEffect, useRef } from "react";
+import styles from "./CustomerService.module.css";
+
+const CustomerService = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState("");
   const [apiResult, setApiResult] = useState(""); // New state for API response
@@ -50,6 +52,7 @@ const App = () => {
       return; // Do not reinitialize the WebSocket if already open
     }
 
+    // Create a new WebSocket if it's not open
     ws.current = new WebSocket(uri);
 
     ws.current.onopen = () => {
@@ -66,22 +69,20 @@ const App = () => {
 
     ws.current.onmessage = (message) => {
       console.log("Message from WebSocket server:", message.data);
-      setTranscription(message.data);
+      setTranscription(message.data); // Set transcription from WebSocket
     };
   };
 
   const startRecording = () => {
-    if (isRecording) {
-      return; // Already recording
-    }
+    if (isRecording) return; // Already recording
 
-    // Step 1: Establish WebSocket connection first
-    connectWebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    // Establish WebSocket connection first
+    connectWebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
 
     ws.current.onopen = () => {
       console.log("WebSocket connection established.");
 
-      // Step 2: Only start recording once WebSocket connection is open
+      // Start recording after WebSocket connection is open
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
@@ -99,10 +100,9 @@ const App = () => {
           mediaStreamSource.current.connect(scriptProcessor.current);
           scriptProcessor.current.connect(audioContext.current.destination);
 
-          // Handle audio data from the microphone
+          // Process microphone audio data
           scriptProcessor.current.onaudioprocess = (audioProcessingEvent) => {
-            const audioData =
-              audioProcessingEvent.inputBuffer.getChannelData(0);
+            const audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
             const pcmData = convertFloat32ToInt16(audioData);
 
             // Send audio data to WebSocket
@@ -114,8 +114,8 @@ const App = () => {
             }
           };
 
-          console.log("Recording started....");
-          setIsRecording(true); // Set the recording state only if recording starts
+          console.log("Recording started...");
+          setIsRecording(true); // Set the recording state after it starts
         })
         .catch((error) => {
           console.error("Error accessing microphone:", error);
@@ -124,38 +124,32 @@ const App = () => {
   };
 
   const stopRecording = async () => {
-    // Step 1: Disconnect the media stream source and script processor
+    // Disconnect media stream and script processor
     if (mediaStreamSource.current && scriptProcessor.current) {
       mediaStreamSource.current.disconnect(scriptProcessor.current);
       scriptProcessor.current.disconnect(audioContext.current.destination);
-      scriptProcessor.current.onaudioprocess = null; // Clear event handler
+      scriptProcessor.current.onaudioprocess = null;
       console.log("Media stream source and script processor disconnected.");
     }
 
-    // Step 2: Stop the audio context to release microphone access
+    // Stop the audio context
     if (audioContext.current) {
       audioContext.current.close().then(() => {
         console.log("Audio context closed.");
       });
     }
 
-    // Step 3: Stop the media stream (important for releasing the microphone)
+    // Stop the media stream tracks to release the microphone
     if (mediaStreamSource.current && mediaStreamSource.current.mediaStream) {
-      mediaStreamSource.current.mediaStream
-        .getTracks()
-        .forEach((track) => track.stop());
+      mediaStreamSource.current.mediaStream.getTracks().forEach((track) =>
+        track.stop()
+      );
     }
 
-    // Step 4: Close the WebSocket connection
-    if (
-      ws.current &&
-      (ws.current.readyState === WebSocket.OPEN ||
-        ws.current.readyState === WebSocket.CONNECTING)
-    ) {
-      ws.current.onclose = () => {
-        console.log("WebSocket connection closed.");
-      };
-      ws.current.close(); // Only close the WebSocket if it's open or connecting
+    // Close the WebSocket connection only if it’s still open
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      ws.current.close();
+      console.log("WebSocket connection closed.");
     } else {
       console.log("WebSocket is already closed or not initialized.");
     }
@@ -165,14 +159,14 @@ const App = () => {
     if (isRecording) {
       stopRecording(); // Stop recording
     } else {
-      connectWebSocket(process.env.REACT_APP_WEBSOCKET_URL); // Connect WebSocket once
+      connectWebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL); // Ensure WebSocket is connected
       startRecording(); // Start audio recording
     }
 
     setIsRecording(!isRecording); // Toggle the recording state
   };
 
-  // Utility function to convert Float32Array to Int16Array (required for WebSocket)
+  // Convert Float32Array to Int16Array (WebSocket required format)
   const convertFloat32ToInt16 = (float32Array) => {
     let int16Array = new Int16Array(float32Array.length);
     for (let i = 0; i < float32Array.length; i++) {
@@ -186,8 +180,8 @@ const App = () => {
     if (transcription) {
       console.log("Current transcription:", transcription);
 
-      // Send the transcription to the textSearch API
-      fetch(process.env.REACT_APP_TEXT_SEARCH_URL, {
+      // Send transcription to textSearch API
+      fetch(process.env.NEXT_PUBLIC_TEXT_SEARCH_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -196,11 +190,11 @@ const App = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Response from testSearch API:", data);
-          setApiResult(data.message); // Set the API result to state
+          console.log("Response from textSearch API:", data);
+          setApiResult(data.message); // Set API result to state
         })
         .catch((error) => {
-          console.error("Error sending transcription to testSearch:", error);
+          console.error("Error sending transcription to textSearch:", error);
         });
     }
   }, [transcription]);
@@ -236,9 +230,8 @@ const App = () => {
             <h2>Call in Progress {formatTime(timer)}</h2>
 
             <button
-              className={`${styles.recordButton} ${
-                isRecording ? styles.pulsing : ""
-              }`}
+              className={`${styles.recordButton} ${isRecording ? styles.pulsing : ""
+                }`}
               onClick={toggleRecording}
             >
               {isRecording ? (
@@ -355,4 +348,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default CustomerService;

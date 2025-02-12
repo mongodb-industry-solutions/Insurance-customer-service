@@ -1,17 +1,19 @@
 services:
-  mongodb-customer-service-front:
+  customer-service-front:
     build:
-      context: ./
-      dockerfile: dockerfile.frontend
+      context: .
+      no_cache: true
+      dockerfile: Dockerfile.frontend
     image: customer-service-front:latest
     ports:
       - "3000:3000"
     restart: always
     container_name: customer-service-front
-  mongodb-customer-service-back:
+  customer-service-back:
     build:
-      context: ./
-      dockerfile: dockerfile.backend
+      context: .
+      no_cache: true
+      dockerfile: Dockerfile.backend
     image: customer-service-back:latest
     ports:
       - "8000:8000"
