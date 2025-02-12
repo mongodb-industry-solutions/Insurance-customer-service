@@ -30,17 +30,17 @@ const Navbar = () => {
               content: [
                 {
                   heading: "What is the Purpose of this Demo?",
-                  body: "Provide real-time suggestions to customer service operators with Vector Search.",
+                  body: "This solution illustrates how MongoDB can transform call center operations. By converting call recordings into searchable vectors (numerical representations of data points in a multi-dimensional space), businesses can quickly access relevant information and improve customer service. We'll dig into how the integration of Amazon Transcribe, Cohere, and MongoDB Atlas Vector Search is achieving this transformation.",
                 },
                 {
                   heading: "How to Use the Demo",
                   body: [
-                    "XXXXXXXXXX",
-                    "XXXXXXXXXX",
-                    "XXXXXXXXXX",
-                    "XXXXXXXXXX.",
-                    "XXXXXXXXXX.",
-                    "XXXXXXXXXX",
+                    "Accept the call by clicking on 'Accept'.",
+                    "Click on the red button with the microphone icon, this will trigger the transcription service to start listening to what the user is saying.",
+                    "Ask one of the suggested questions.",
+                    "Click again on the microphone icon to stop recording.",
+                    "Makes sure the transcription is correct and it displays exactly the sentence you uttered.",
+                    "The suggested answer will appear on the right",
                   ],
                 },
               ],
@@ -54,7 +54,7 @@ const Navbar = () => {
                 },
                 {
                   image: {
-                    src: "/info.png", // Ensure this image is in the public folder
+                    src: "/architecture.png", // Ensure this image is in the public folder
                     alt: "Architecture",
                   },
                 },
@@ -64,16 +64,12 @@ const Navbar = () => {
               heading: "Why MongoDB?",
               content: [
                 {
-                  heading: "Heading 1",
-                  body: "XXXXXXXXXX.",
+                  heading: "Integration",
+                  body: "MongoDB is easy to integrate with AI services such as Amazon Bedrock and Transcribe.",
                 },
                 {
-                  heading: "Heading 2",
-                  body: "XXXXXXXXXX.",
-                },
-                {
-                  heading: "Heading 3",
-                  body: "XXXXXXXXXX.",
+                  heading: "OLTP alongside Vectors",
+                  body: "MongoDB integrates the transactional and vector data in the same platform.",
                 },
               ],
             },
