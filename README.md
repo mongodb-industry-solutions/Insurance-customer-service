@@ -19,18 +19,24 @@ For a detailed exploration of this demo and its impact on customer service in th
 
 ## Tech Stack
 
-- [React](https://react.dev/) for the Frontend
-- [FastAPI](https://fastapi.tiangolo.com/) for the Backend
 - [MongoDB Atlas](https://www.mongodb.com/atlas/database) for the database
+- [Python](https://www.python.org/) for the backend language
+- [FastAPI](https://fastapi.tiangolo.com/) for the backend framework
+- [Uvicorn](https://www.uvicorn.org/) for ASGI server
+- [Poetry](https://python-poetry.org/) for dependency management
+- [Next.js](https://nextjs.org/) for the frontend framework
 - [CSS Modules](https://github.com/css-modules/css-modules) for styling
-
+- [Docker](https://www.docker.com/) for containerization
+- [Docker desktop](https://www.docker.com/products/docker-desktop/) (optional)
 
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
 
+- MongoDB Atlas account, you can create one [here](https://account.mongodb.com/account/register). Free tier is sufficient for this project.
 - Node.js 14 or higher
-- Python 3.9 or higher
+- Python 3.10 or higher (but less than 3.11)
+- Poetry (install via [Poetry's official documentation](https://python-poetry.org/docs/#installation))
 
 ## Importing FAQs into MongoDB Atlas
 
@@ -71,41 +77,66 @@ By following these steps, you will have the FAQs data imported into your MongoDB
 
 ### Frontend
 
-1. Navigate to the `frontend` folder.
-2. Create a `.env` file:
-```
-REACT_APP_WEBSOCKET_URL=ws://localhost:8000/TranscribeStreaming
-REACT_APP_TEXT_SEARCH_URL=http://localhost:8000/textSearch
-```
-3. Install dependencies by running:
+### Add environment variables
+
+1. Navigate to the `/frontend` folder.
+2. Create a `.env.local` file:
 ```bash
-npm install
+NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:8000/TranscribeStreaming
+NEXT_PUBLIC_TEXT_SEARCH_URL=http://localhost:8000/textSearch
 ```
-3. Start the frontend development server with:
+3. Navigate to the `/frontend` folder.
+4. Install dependencies by running:
+```bash
+npm install --legacy-peer-deps
+```
+5. Start the frontend development server with:
 ````bash
 npm run dev
 ````
-4. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface.
+6. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface.
 
 ### Backend 
 
-1. Navigate to the `backed` folder.
-2. Create a `.env` file:
-```
+### Add environment variables
+
+> **_Note:_** Create a `.env` file within the `/backend` directory.
+
+```bash
 MONGO_URI=
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_KEY_REGION=
 ```
-4. Install dependencies by running:
-```bash
-pip install -r requirements.txt
-```
-3. Start the backend development server with:
-````bash
-uvicorn main:app --host 0.0.0.0 --port 8000
-````
-4. The backend will now be accessible at http://localhost:8000 by default.
+
+### Setup virtual environment with Poetry
+
+1. (Optional) Set your project description and author information in the `pyproject.toml` file:
+   ```toml
+   description = "Your Description"
+   authors = ["Your Name <you@example.com>"]
+2. Open the project in your preferred IDE.
+3. Open a Terminal window.
+4. Ensure you are in the root project directory where the `makefile` is located.
+5. Execute the following commands:
+  - Poetry start
+    ````bash
+    make poetry_start
+    ````
+  - Poetry install
+    ````bash
+    make poetry_install
+    ````
+6. Verify that the `.venv` folder has been generated within the `/backend` directory.
+
+### Run the Backend
+
+1. To run the backend, execute the following command:
+    ````bash
+    poetry run uvicorn main:app --host 0.0.0.0 --port 8000
+    ````
+
+> **_Note:_** Notice that the backend is running on port `8000`. You can change this port by modifying the `--port` flag.
 
 ## Run with Docker
 
@@ -122,4 +153,17 @@ make clean
 
 ## Common errors
 
-- Check that you've created an `.env` file that contains your valid (and working) API keys, environment and index variables.
+### Frontend
+
+- Check that you've created an `.env.local` file that contains the required environment variables.
+
+### Backend
+
+- Check that you've created an `.env` file that contains the required environment variables.
+
+## Future tasks
+
+- [ ] Add tests
+- [ ] Code quality checks
+- [ ] Automate the deployment process using GitHub Actions or CodePipeline
+
