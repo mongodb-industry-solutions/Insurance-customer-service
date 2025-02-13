@@ -27,7 +27,7 @@
     right: 20px;
     text-align: left;
     border-radius: 10px;
-    padding: 2px 20px;
+    padding: 2px 30px;
     box-shadow: 2px 2px 10px 2px rgb(0 0 0 / 20%);
     animation: slideInLeft 0.5s ease-out; /* Animation effect */
 
@@ -48,24 +48,14 @@
     margin-top: 0px;
 }
 
-.button{
-    border-radius: 5px;
-    font-size: 16px;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    color: white;
-    font-weight: 700;
-    margin-right: 10px;
-    border: none;
+
+
+.callBtns{
+    margin-bottom: 15px;
 }
 
 .acceptBtn{
-    background-color: #27BA9C;
-}
-
-.declineBtn{
-    background-color: #DE473B;
+   margin-right: 15px;
 }
 
 .leftPanel, .rightPanel {

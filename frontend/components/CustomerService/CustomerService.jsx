@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./CustomerService.module.css";
+import Button from "@leafygreen-ui/button";
+import Icon from "@leafygreen-ui/icon";
+
 
 const CustomerService = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -215,12 +218,25 @@ const CustomerService = () => {
         <div className={styles.callCard}>
           <p className={styles.name}>Jane Morris</p>
           <p className={styles.calling}>is now calling...</p>
-          <button className={styles.acceptBtn} onClick={acceptCall}>
-            Accept
-          </button>
-          <button className={styles.declineBtn} onClick={declineCall}>
-            Decline
-          </button>
+
+          <div className={styles.callBtns}>
+            <Button
+              className={styles.acceptBtn}
+              variant="baseGreen"
+              leftGlyph={<Icon glyph="Checkmark" />}
+              onClick={acceptCall}>
+              Accept
+            </Button>
+
+            <Button
+              className={styles.declineBtn}
+              variant="danger"
+              leftGlyph={<Icon glyph="XWithCircle" />}
+              onClick={declineCall}>
+              Decline
+            </Button>
+
+          </div>
         </div>
       )}
 

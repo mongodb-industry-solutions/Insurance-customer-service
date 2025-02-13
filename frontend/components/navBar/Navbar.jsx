@@ -15,7 +15,7 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.logo}>
         {/* Use Next.js Image for optimized loading */}
-        <Image src="/logo.png" alt="Logo" width={200} height={50} priority />
+        <Image src="/logo.png" alt="Logo" width={250} height={50} priority />
       </div>
 
       <div className={styles["wizard-container"]}>
@@ -64,11 +64,11 @@ const Navbar = () => {
               heading: "Why MongoDB?",
               content: [
                 {
-                  heading: "Integration",
-                  body: "MongoDB is easy to integrate with AI services such as Amazon Bedrock and Transcribe.",
+                  heading: "Integration with AI Tools",
+                  body: "MongoDB is easy to integrate with AI services such as Amazon Bedrock and Amazon Transcribe.",
                 },
                 {
-                  heading: "OLTP alongside Vectors",
+                  heading: "OLTP Alongside Vectors",
                   body: "MongoDB integrates the transactional and vector data in the same platform.",
                 },
               ],
