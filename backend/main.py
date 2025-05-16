@@ -3,7 +3,7 @@ import asyncio
 import os
 import logging
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
-from amazon_transcribe.client import TranscribeStreamingClient
+from transcribe_client import TranscribeClient
 from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,7 +37,7 @@ async def websocket_endpoint(websocket: WebSocket):
     websocket_open = True
     stop_audio_stream = False
     audio_queue = asyncio.Queue()
-
+    
     class MyEventHandler(TranscriptResultStreamHandler):
         def __init__(self, output_stream, websocket):
             super().__init__(output_stream)
@@ -111,9 +111,12 @@ async def websocket_endpoint(websocket: WebSocket):
 
     _base.Future.set_result = safe_set_result
 
+    # Initialize the Transcribe client
+    transcribe_client = TranscribeClient()
+
     try:
-        region = os.getenv("AWS_REGION")  # us-east-1
-        client = TranscribeStreamingClient(region=region)
+        # Get the client (this will handle all credential resolution)
+        client = transcribe_client.get_client()
 
         logging.info("Starting AWS Transcribe stream.")
         stream = await client.start_stream_transcription(
