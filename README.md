@@ -104,8 +104,6 @@ npm run dev
 
 ```bash
 MONGO_URI=
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
 AWS_KEY_REGION=
 ```
 

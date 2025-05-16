@@ -20,14 +20,10 @@ MONGODB_COLLECTION = client[DB_NAME][COLLECTION_NAME]
 ATLAS_VECTOR_SEARCH_INDEX_NAME = "cohere"
 
 AWS_KEY_REGION = os.getenv("AWS_KEY_REGION")
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 # Getting Bedrock Client
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html
 bedrock_client = BedrockClient(
-    aws_access_key=AWS_ACCESS_KEY_ID,
-    aws_secret_key=AWS_SECRET_ACCESS_KEY,
     region_name=AWS_KEY_REGION
 )._get_bedrock_client()
 
