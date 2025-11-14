@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "your-virtual-env"
+version = "0.1.0"
+description = "The demo showcases how MongoDB can revolutionize call center operations for insurance companies by converting call recordings into searchable vectors."
+authors = ["Luca Napoli <luca.napoli@mongodb.com>"]
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+fastapi = "^0.115.8"
+amazon-transcribe = "^0.6.2"
+httpx = "^0.28.1"
+langchain-aws = "^0.2.12"
+python-dotenv = "^1.0.1"
+boto3 = "^1.36.17"
+websockets = "^14.2"
+sounddevice = "^0.5.1"
+pymongo = "^4.11.1"
+langchain-mongodb = "^0.4.0"
+uvicorn = { version = "^0.34.0", extras = ["standard"] }
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

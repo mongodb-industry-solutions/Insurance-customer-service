@@ -1,0 +1,15 @@
+env:
+  NODE_ENV: staging
+  # AWS region for IRSA (no credentials needed)  
+  AWS_KEY_REGION: us-east-1
+  AWS_REGION: us-east-1
+
+envSecrets:
+  # MongoDB Configuration
+  MONGO_URI: insurance-customer-service-secrets
+
+serviceAccount:
+  enabled: true
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-staging-cicd-irsa"

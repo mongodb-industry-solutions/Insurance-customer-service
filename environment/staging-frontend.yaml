@@ -1,0 +1,10 @@
+env:
+  NODE_ENV: staging
+  # Use internal k8s service for API proxy routes - bypasses authentication
+  INTERNAL_API_URL: http://insurance-customer-service-backend-web-app:80
+  # WebSocket URL (must be external since WebSockets can't be proxied)
+  NEXT_PUBLIC_WEBSOCKET_URL: wss://insurance-customer-service-backend.industrysolutions.staging.corp.mongodb.com/TranscribeStreaming
+
+# No service account needed for frontend
+serviceAccount:
+  enabled: false

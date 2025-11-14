@@ -1,0 +1,13 @@
+env:
+  NODE_ENV: prod
+  AWS_KEY_REGION: us-east-1
+  AWS_REGION: us-east-1
+
+envSecrets:
+  MONGO_URI: insurance-customer-service-secrets
+
+serviceAccount:
+  enabled: true
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-prod-cicd-irsa"

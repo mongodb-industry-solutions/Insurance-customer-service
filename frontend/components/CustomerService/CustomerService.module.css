@@ -1,0 +1,331 @@
+.content {
+    display: flex;
+    height: 100vh; /* Full viewport height */
+    margin-top: 220px;
+    position: fixed;
+    overflow-y: scroll;
+    /* Enable vertical scrolling */
+
+}
+/* Call card animation from left to right */
+@keyframes slideInLeft {
+    from {
+      transform: translateX(100%); /* Start off-screen on the left */
+      opacity: 0; /* Hidden */
+    }
+    to {
+      transform: translateX(0); /* End at the original position */
+      opacity: 1; /* Fully visible */
+    }
+  }
+  
+
+.callCard {
+    background-color: #30373F;
+    position: fixed;
+    top: 150px;
+    right: 20px;
+    text-align: left;
+    border-radius: 10px;
+    padding: 2px 30px;
+    box-shadow: 2px 2px 10px 2px rgb(0 0 0 / 20%);
+    animation: slideInLeft 0.5s ease-out; /* Animation effect */
+
+}
+
+.name{
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.calling{
+    font-size: 16px;
+    font-weight: 600;
+    color: #c8d1dc;
+    margin-bottom: 10px;
+    margin-top: 0px;
+}
+
+
+
+.callBtns{
+    margin-bottom: 15px;
+}
+
+.acceptBtn{
+   margin-right: 15px;
+}
+
+.leftPanel, .rightPanel {
+    width: 50%; /* Each panel takes up half of the screen */
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Enable vertical scrolling for content */
+    padding: 50px;
+    box-sizing: border-box;
+    position: fixed; /* Prevent movement when other elements appear */
+}
+
+.leftPanel {
+    left: 0;
+    border-right: 1px solid #ccc; /* Divider between panels */
+}
+
+.rightPanel {
+    right: 0;
+}
+
+
+
+
+.recordButton {
+    background-color: #FF8484;
+    border-radius: 50px;
+    width: 100px;
+    height: 100px;
+    border: none;
+    box-shadow: 2px 2px 10px 2px rgb(0 0 0 / 8%);
+    cursor: pointer;
+}
+
+.pulsing {
+    animation: pulse 1.5s infinite;
+    background-color: white;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
+}
+
+.suggestionSection {
+    margin-top: 40px;
+  
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+}
+
+.h3 {
+    font-size: 18px;
+    font-weight: 700;
+
+}
+
+.suggestionContainer {
+    display: inline-block;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    height: 100%; /* Ensure the container takes up the full height of the panel */
+   
+}
+
+.suggestion {
+    border-radius: 50px;
+    font-size: 16px;
+    padding: 3px 15px;
+    background-color: #F9FBFA;
+}
+
+.badgeContainer {
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    
+}
+
+.badge {
+    background-color: #E1F7FF;
+    font-size: 16px;
+    font-weight: 500;
+    color: #0C2657;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-top: 40px;
+    max-width: fit-content;
+}
+
+
+.answer {
+    font-size: 17px;
+    background-color: #edf0ef;
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: 30px;
+}
+
+.customerInfo{
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.20);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    width: max-content;
+    /* width: max-content; */
+}
+
+.customerPhoto {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the images and text */
+    margin-bottom: 15px; /* Space between each photo */
+    margin-top: 15px;
+}
+
+.customerPhotos {
+    display: flex; /* Stack photos horizontally */
+    flex-direction: column; /* Stack vertically */
+    margin-right: 20px; /* Space between photos and card */
+}
+
+
+.customerPhotoImage {
+    width: 70px; /* Set a fixed width for images */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.photoName {
+    margin: 0; /* Reset margin */
+    font-size: 13px; /* Adjust font size as needed */
+    text-align: left; /* Center align the text */
+    /* white-space: nowrap; */
+    max-width: 100%;
+}
+
+.fieldTitle {
+    color: #889397;
+    font-weight: 700;
+    /* Make the font thicker */
+    font-size: 14px;    
+
+}
+
+.fieldContent {
+    font-size: 14px;
+    margin-top: 2px;
+    font-weight: bold;
+}
+
+.fieldContentSentiment {
+    font-size: 14px;
+    margin-top: 2px;
+    background-color: #dcf95c;
+    border-radius: 15px;
+    color: #097f46;
+    font-weight: bold;
+    padding: 2px 8px;
+    width: fit-content;
+}
+
+.fieldWrapper {
+    flex: 1;
+    margin-right: 10px;
+    min-width: 150px; /* Set a minimum width to ensure titles align */
+    max-width: 250px;
+}
+
+.card{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    /* width: 100%; */
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+}
+
+.row .fieldWrapper:last-child {
+    margin-right: 0;
+}
+
+.line {
+    border: none; /* Remove default styling */
+    border-top: 1px solid #ccc; /* Set the line color */
+    margin: 10px 0; /* Space above and below the line */
+    width: 100%; /* Full width */
+}
+
+.customerLocation{
+    display: inline-flex;
+}
+
+.fieldContentLocation {
+    font-size: 14px;
+    margin-top: 2px;
+    padding-top: 10px;
+    padding-left: 5px;
+}
+
+.customerIcon {
+    width: 20px; /* Set a fixed width for images */
+    height: auto;
+}
+
+.fieldContentClaim {
+    font-size: 14px;
+    margin-top: 2px;
+    font-weight: bold;
+    text-decoration: underline; 
+}
+
+
+.app-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Center content vertically */
+    height: 100vh;
+    width: 100vw; /* Ensure full viewport width */
+    box-sizing: border-box; /* Prevent content overflow due to padding or border */
+    overflow: hidden; /* Prevent clipping/overflowing of content */
+  }
+  
+  .left-panel {
+    flex: 1; /* Use flexbox to allow the left panel to take 30% of the available space */
+    padding: 20px;
+    background-color: #f0f0f0;
+    text-align: center;
+    min-width: 200px; /* Minimum width to prevent collapse */
+    overflow-y: auto; /* Allows scrolling if content exceeds viewport height */
+    max-height: 100vh; /* Ensure it doesn't exceed viewport height */
+    box-sizing: border-box; /* Account for padding within the width and height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers content vertically within the left panel */
+  }
+  
+  .right-panel {
+    flex: 2; /* Let the right panel take the remaining space (roughly 70%) */
+    padding: 20px;
+    text-align: center;
+    min-width: 400px; /* Minimum width to prevent clipping */
+    max-height: 100vh; /* Ensure the panel content doesn't overflow the viewport height */
+    overflow-y: auto; /* Add vertical scroll if content exceeds viewport */
+    box-sizing: border-box; /* Prevent padding from causing overflow */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers content vertically within the right panel */
+  }
+  
+  .separator {
+    width: 5px;
+    background-color: #ccc;
+    height: 100%;
+    flex-shrink: 0; /* Ensure the separator doesn't shrink */
+  }

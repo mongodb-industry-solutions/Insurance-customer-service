@@ -1,0 +1,28 @@
+services:
+  customer-service-front:
+    build:
+      context: .
+      no_cache: true
+      dockerfile: dockerfile.frontend
+      args:
+        NEXT_PUBLIC_WEBSOCKET_URL: ws://localhost:8000/TranscribeStreaming
+        NODE_ENV: development
+    image: customer-service-front:latest
+    ports:
+      - "3000:8080"
+    restart: always
+    container_name: customer-service-front
+  customer-service-back:
+    build:
+      context: .
+      no_cache: true
+      dockerfile: dockerfile.backend
+    image: customer-service-back:latest
+    volumes:
+      - ~/.aws/credentials:/root/.aws/credentials:ro
+      - ~/.aws/config:/root/.aws/config:ro
+      - ~/.aws/sso/cache:/root/.aws/sso/cache:rw  # Only make cache writable
+    ports:
+      - "8080:8080"
+    restart: always
+    container_name: customer-service-back
