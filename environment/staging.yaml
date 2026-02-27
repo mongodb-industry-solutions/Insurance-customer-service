@@ -7,6 +7,7 @@ env:
 envSecrets:
   # MongoDB Configuration
   MONGO_URI: insurance-customer-service-secrets
+  BEDROCK_MODEL_COHERE_EMBED: insurance-customer-service-secrets
 
 serviceAccount:
   enabled: true

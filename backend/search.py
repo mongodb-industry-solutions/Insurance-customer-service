@@ -30,7 +30,7 @@ bedrock_client = BedrockClient(
 # Initialize BedrockEmbeddings with AWS credentials and region
 embeddings = BedrockEmbeddings(
     client=bedrock_client,
-    model_id="cohere.embed-english-v3"
+    model_id=os.getenv("BEDROCK_MODEL_COHERE_EMBED", "cohere.embed-english-v3")
 )
 
 # Initialize MongoDB Atlas Vector Search
